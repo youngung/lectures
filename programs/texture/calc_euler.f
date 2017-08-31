@@ -17,6 +17,7 @@ c$$$      call euler(a,1,nomen,d1,d2,d3,ior,kerr)
 c$$$      write(*,*)'d1,d2,d3'
 c$$$      write(*,*)d1,d2,d3
 c------------------------------------------------------------------------c
+      write(*,*)'Type d1, d2, d3 for subroutine euler'
       read(*,*) d1,d2,d3
       call euler(a,2,nomen,d1,d2,d3,ior,kerr)
       do i=1,3
