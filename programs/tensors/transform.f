@@ -38,7 +38,7 @@
       write(*,*) 'new velocity'
       write(*,'(3f5.1)') (velocity_new(i),i=1,3)
 
-      end program transform
+      end
 
 c     ---------------------------------------------------------
 

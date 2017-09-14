@@ -11,13 +11,16 @@ objects=$(addprefix $(OBJDIR)/,euler.o calc_euler.o)
 
 calcEuler: $(objects)
 	$(FC) $(FLAGS) $(objects) -o calcEuler
+ev: princ/ev.f
+	$(FC) princ/ev.f -o ev -llapack
+
 $(OBJDIR)/euler.o: texture/euler.f
 	$(FC) $(FLAGS) -c texture/euler.f -o $(OBJDIR)/euler.o
 $(OBJDIR)/calc_euler.o: texture/calc_euler.f texture/euler.f
 	$(FC) $(FLAGS) -c texture/calc_euler.f -o $(OBJDIR)/calc_euler.o
 
 .PHONY: all clean
-all: calcEuler
+all: calcEuler ev
 
 
 $(objects): | $(OBJDIR)
@@ -25,4 +28,4 @@ $(OBJDIR):
 	mkdir $(OBJDIR)
 
 clean:
-	-rm $(objects)
+	-rm $(objects) ev calcEuler
