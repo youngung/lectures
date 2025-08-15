@@ -7,7 +7,7 @@
  - 기초 Python 이해를 바탕으로, 재료공학적 문제 해결에 응용
 # 주차별 내용
 
-# 1주 (개요, 설치, 변수 및 연산자)
+# Week1 (개요, 설치, 변수 및 연산자)
 ## 수업 01-1
  - 목표
    + 수업 개요 및 진행, 규칙 설명
@@ -48,34 +48,34 @@
       + 산술 연산자 (더하기, 빼기, 곱하기, 나누기, 지수, 나머지, 몫 ... )
       + 비교 연산자 (==, !=, <, >, >=, <=, is, is not, in, not in)
       + 논리 연산자 (and or)
-```python
-# 1. 값 비교
-print(5 == 5)       # True (값이 같음)
-print(5 != 3)       # True (값이 다름)
-print(7 > 2)        # True (7이 2보다 큼)
-print(3 < 7)        # True (3이 7보다 작음)
-print(5 >= 5)       # True (5가 5보다 크거나 같음)
-print(4 <= 6)       # True (4가 6보다 작거나 같음)
+        ```python
+        # 1. 값 비교
+        print(5 == 5)       # True (값이 같음)
+        print(5 != 3)       # True (값이 다름)
+        print(7 > 2)        # True (7이 2보다 큼)
+        print(3 < 7)        # True (3이 7보다 작음)
+        print(5 >= 5)       # True (5가 5보다 크거나 같음)
+        print(4 <= 6)       # True (4가 6보다 작거나 같음)
 
-# 2. 객체 동일성 비교
-a = [1, 2, 3]
-b = [1, 2, 3]
-c = a
+        # 2. 객체 동일성 비교
+        a = [1, 2, 3]
+        b = [1, 2, 3]
+        c = a
 
-print(a == b)       # True  (값이 같음)
-print(a is b)       # False (메모리 주소 다름)
-print(a is c)       # True  (같은 객체)
-print(a is not b)   # True  (다른 객체)
+        print(a == b)       # True  (값이 같음)
+        print(a is b)       # False (메모리 주소 다름)
+        print(a is c)       # True  (같은 객체)
+        print(a is not b)   # True  (다른 객체)
 
-# 3. 포함 여부
-text = "Fe2O3"
-print("F" in text)      # True  ('a'가 문자열에 포함됨)
-print("O" not in text)  # True  ('z'가 문자열에 없음)
+        # 3. 포함 여부
+        text = "Fe2O3"
+        print("F" in text)      # True  ('a'가 문자열에 포함됨)
+        print("O" not in text)  # True  ('z'가 문자열에 없음)
 
-numbers = [1, 2, 3]
-print(2 in numbers)     # True  (리스트에 2가 포함됨)
-print(5 not in numbers) # True  (리스트에 5가 없음)
-```
+        numbers = [1, 2, 3]
+        print(2 in numbers)     # True  (리스트에 2가 포함됨)
+        print(5 not in numbers) # True  (리스트에 5가 없음)
+       ```
  - 실습 예시
    * pip 활용하여 NumPy 설치하고, package directory 찾기.
    * 인치(inch_leng) 길이를 센치미터(cmeter_leng)로 바꿔서 계산. 센치 미터를 인치로
@@ -121,9 +121,9 @@ print(5 not in numbers) # True  (리스트에 5가 없음)
      $$\frac{w^{^{136}Ce}f^{^{136}Ce}+w^{^{138}Ce}f^{^{138}Ce}+w^{^{140}Ce}f^{^{140}Ce}+w^{^{142}Ce}f^{^{142}Ce}}{f^{^{136}Ce}+f^{^{138}Ce}+f^{^{140}Ce}+f^{^{142}Ce}}$$
 
 
-# 2주 (자료구조, 제어, 반복)
+# Week2 (자료구조, 제어, 반복)
  - 목표
-  + List, Tuple, Dictionary, ~~set~~
+  + List, Tuple, Dictionary, set
   + 조건문과 (conditions), 반복문 (loop) 이해
 ## 수업 02-1
  - list, tuple, dictionary 생성/수정/조회
@@ -185,6 +185,40 @@ print(5 not in numbers) # True  (리스트에 5가 없음)
        r, g, b = colors
        print(r, g, b)     # red green blue
        ```
+  + set
+    * 특징
+      + 중복제거: 같은 값이 입력되어도 하나만 남게 됨
+      + 순서없음
+      + 인덱싱 불가: list나 tuple과 다름
+      + 수정 가능 (mutable)
+      + 원소의 타입에 제한 **있음**:
+      + 실습1: 생성
+        ```python
+        # 중괄호 {} 사용
+        s1 = {1, 2, 3}
+        print(s1)  # {1, 2, 3}
+
+        # set() 함수 사용
+        s2 = set([1, 2, 2, 3])
+        print(s2)  # {1, 2, 3} (중복 제거)
+
+        # 빈 set 생성 시는 set()만 가능
+        empty_set = set()
+        print(empty_set)  # set()
+        ```
+      + 실습2: 변경
+        ```python
+        s = {1, 2, 3}
+
+        # 추가
+        s.add(4)           # {1, 2, 3, 4}
+        s.update([5, 6])   # {1, 2, 3, 4, 5, 6} (여러 개 추가)
+
+        # 삭제
+        s.remove(3)        # {1, 2, 4, 5, 6} (없는 값 제거 시 오류 발생)
+        s.discard(10)      # 없는 값 제거해도 오류 없음
+        s.pop()            # 임의의 값 제거 후 반환 (순서 없으니 랜덤)
+        ```
 
   + ```len``` built-in function중 하나
     ```python
@@ -305,7 +339,6 @@ print(5 not in numbers) # True  (리스트에 5가 없음)
                 print(f"Index {i} → {word[i]}")
             ```
 
-
  - 실습 예시
       * 구구단 출력하기 (x단 입력하면 ... )
       * 학생 점수 데이터에서, 산술 평균, 최고점과 최저점 학생 이름 찾기 (조건문과 loop 활용)
@@ -327,7 +360,7 @@ print(5 not in numbers) # True  (리스트에 5가 없음)
                 no_electrons=no_electrons+2 # 각 state마다 up/down spin 전자, 따라서 2개씩.
         print('total number of electrons:',no_electrons)
         ```
-# 3주 (함수, class, module; **import** )
+# Week3 (함수, class, module; **import** )
  - 목표
   + 함수와 클래스, 그리고 모듈의 이해
   + 함수를 만들어, 모듈화 시키고 CLI에서 실행할 수 있다.
@@ -433,16 +466,16 @@ print(5 not in numbers) # True  (리스트에 5가 없음)
 
 
 
-# 4주 (file IO / NumPy 01 - 기초 배열(array) 이해)
-# 5주 (NumPy 02 - 배열 연산(산술, 내적, 외적), 브로드캐스팅, 그외 기타 함수)
-# 6주 (NumPy 03 - Matrix, Determination, Eigen value)
-# 7주 (중간고사)
-# 8주 (Matplotlib 01)
-# 9주 (Matplotlib 02)
-# 10주 (Matplotlib + NumPy 01 + Slicing)
-# 11주 (Matplotlib + NumPy 02 + FILE I/O)
-# 12주 (Matplotlib + NumPy 03 + File I/O)
-# 13주 (내삽과 외삽, 선형회귀)
+# Week4 (file IO / NumPy 01 - 기초 배열(array) 이해)
+# Week5 (NumPy 02 - 배열 연산(산술, 내적, 외적), 브로드캐스팅, 그외 기타 함수)
+# Week6 (NumPy 03 - Matrix, Determination, Eigen value)
+# Week7 (중간고사)
+# Week8 (Matplotlib 01)
+# Week9 (Matplotlib 02)
+# Week10 (Matplotlib + NumPy 01 + Slicing)
+# Week11 (Matplotlib + NumPy 02 + FILE I/O)
+# Week12 (Matplotlib + NumPy 03 + File I/O)
+# Week13 (내삽과 외삽, 선형회귀)
  - 실습 예시
     * 금속 합금 조성 (Cu %) vs 전기 전도도
 ```python
@@ -461,6 +494,6 @@ plt.grid(True)
 plt.legend()
 plt.show()
 ```
-# 14주
-# 15주
+# Week14
+# Week15 (기말고사)
 s
