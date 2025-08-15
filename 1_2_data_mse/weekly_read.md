@@ -7,7 +7,7 @@
  - 기초 Python 이해를 바탕으로, 재료공학적 문제 해결에 응용
 # 주차별 내용
 
-# Week1 (개요, 설치, 변수 및 연산자)
+# Week1 (개요, 설치, 변수 및 연산자) -
 ## 수업 01-1
  - 목표
    + 수업 개요 및 진행, 규칙 설명
@@ -119,116 +119,122 @@
      $$\frac{w^{^{136}Ce}+w^{^{138}Ce}+w^{^{140}Ce}+w^{^{142}Ce}}{4}$$
      로 구했겠지만, 서로 다른량이 존재하므로 주어진 분율을 활용해야겠다. 즉
      $$\frac{w^{^{136}Ce}f^{^{136}Ce}+w^{^{138}Ce}f^{^{138}Ce}+w^{^{140}Ce}f^{^{140}Ce}+w^{^{142}Ce}f^{^{142}Ce}}{f^{^{136}Ce}+f^{^{138}Ce}+f^{^{140}Ce}+f^{^{142}Ce}}$$
-
-
 # Week2 (자료구조, 제어, 반복)
  - 목표
-  + List, Tuple, Dictionary, set
-  + 조건문과 (conditions), 반복문 (loop) 이해
+   + List, Tuple, Dictionary, set
+   + 조건문과 (conditions), 반복문 (loop) 이해
 ## 수업 02-1
- - list, tuple, dictionary 생성/수정/조회
-  + List
-     * 특징:
-       + 수정 가능(mutable): 추가, 삭제, 변경 가능
-       + 중복 허용
-       + 순서 있음 (ordered)
-       + 여러 자료형 혼합해서 저장 가능
-     * 리스트 생성 - 대괄호 사용 ```[]```
-       ```python
-       elements = ["H", "He", "Li", "Be"]
-       ```
-     * 요소 접근 (인덱싱; indexing); 0에서 부터 시작
-       ```python
-       print(elements[0])   # H
-       ```
-     * 요소 변경
-       ```python
-       elements[1] = "Helium"
-       print(elements)     #elements = ["H", "Helium", "Li", "Be"]
-       ```
-     * 요소 추가 / 삭제
-       ```python
-       elements.append("B")   #elements = ["H", "Helium", "Li", "Be", "B"]
-       elements.remove("Li")  #elements = ["H", "Helium", "Be", "B"]
-       ```
-     * 중복 허용
-       ```python
-       elements = ['H','He','H']
-       print(elements)
-       ```
-     * 여러 자료형 혼합
-       ```python
-       myList=['H',203,2.3,['H','He']]
-       myMatrix=[[1,2,3],[4,5,6],[7,8,9]] ##중첩된 리스트
-       ```
-     * 언패킹 (unpacking)
-       ```python
-       a,b,c,d=[1,3,4,5]
-       ```
-
-  + tuple
-     * 특징
-       + 수정 불가능 (immutable); 한번 만들어지면 이후 변경 불가능
-       + 중복 허용
-       + 순서 있음
-       + 여러 자료형 혼합해서 저장 가능
-     * 튜플 생성 - 소괄호 ```()``` 사용
-       ```python
-       colors = ("red", "green", "blue")
-       # 요소 접근
-       print(colors[1])   # green
-
-       # 변경 불가 → 아래 코드는 오류 발생
-       # colors[1] = "yellow"
-
-       # 튜플 언패킹
-       r, g, b = colors
-       print(r, g, b)     # red green blue
-       ```
-  + set
-    * 특징
-      + 중복제거: 같은 값이 입력되어도 하나만 남게 됨
-      + 순서없음
-      + 인덱싱 불가: list나 tuple과 다름
-      + 수정 가능 (mutable)
-      + 원소의 타입에 제한 **있음**:
-      + 실습1: 생성
+  - list, tuple, dictionary 생성/수정/조회
+    +  List
+      * 특징:
+        + 수정 가능(mutable): 추가, 삭제, 변경 가능
+        + 중복 허용
+        + 순서 있음 (ordered)
+        + 여러 자료형 혼합해서 저장 가능
+      * 리스트 생성 - 대괄호 사용 ```[]```
         ```python
-        # 중괄호 {} 사용
-        s1 = {1, 2, 3}
-        print(s1)  # {1, 2, 3}
-
-        # set() 함수 사용
-        s2 = set([1, 2, 2, 3])
-        print(s2)  # {1, 2, 3} (중복 제거)
-
-        # 빈 set 생성 시는 set()만 가능
-        empty_set = set()
-        print(empty_set)  # set()
+        elements = ["H", "He", "Li", "Be"]
         ```
-      + 실습2: 변경
+      * 요소 접근 (인덱싱; indexing); 0에서 부터 시작
         ```python
-        s = {1, 2, 3}
-
-        # 추가
-        s.add(4)           # {1, 2, 3, 4}
-        s.update([5, 6])   # {1, 2, 3, 4, 5, 6} (여러 개 추가)
-
-        # 삭제
-        s.remove(3)        # {1, 2, 4, 5, 6} (없는 값 제거 시 오류 발생)
-        s.discard(10)      # 없는 값 제거해도 오류 없음
-        s.pop()            # 임의의 값 제거 후 반환 (순서 없으니 랜덤)
+        print(elements[0])   # H
         ```
+      * 요소 변경
+        ```python
+        elements[1] = "Helium"
+        print(elements)     #elements = ["H", "Helium", "Li", "Be"]
+        ```
+      * 요소 추가 / 삭제
+        ```python
+        elements.append("B")   #elements = ["H", "Helium", "Li", "Be", "B"]
+        elements.remove("Li")  #elements = ["H", "Helium", "Be", "B"]
+        ```
+      * 중복 허용
+        ```python
+        elements = ['H','He','H']
+        print(elements)
+         ```
+      * 여러 자료형 혼합
+        ```python
+        myList=['H',203,2.3,['H','He']]
+        myMatrix=[[1,2,3],[4,5,6],[7,8,9]] ##중첩된 리스트
+        ```
+      * 언패킹 (unpacking)
+        ```python
+        a,b,c,d=[1,3,4,5]
+        ```
+    + tuple
+      * 특징
+        + 수정 불가능 (immutable); 한번 만들어지면 이후 변경 불가능
+        + 중복 허용
+         + 순서 있음
+         + 여러 자료형 혼합해서 저장 가능
+      * 튜플 생성 - 소괄호 ```()``` 사용
+        ```python
+         colors = ("red", "green", "blue")
+         # 요소 접근
+         print(colors[1])   # green
 
-  + ```len``` built-in function중 하나
-    ```python
-    a=[3,4,5,'a','b']
-    len(a) # 정수 5
-    ```
-  - List slicing
-  - 1족 원소 기호를 순서대로 포함한 리스트 만들기 (수소, 리튬, 나트륨, 칼륨, 루비듐, 세슘, 프랑슘)
-  - 실습 예시
-    * Calister 예제 2.1)
+         # 변경 불가 → 아래 코드는 오류 발생
+         # colors[1] = "yellow"
+
+         # 튜플 언패킹
+         r, g, b = colors
+         print(r, g, b)     # red green blue
+         ```
+    + set
+      * 특징
+        + 중복제거: 같은 값이 입력되어도 하나만 남게 됨
+        + 순서없음
+        + 인덱싱 불가: list나 tuple과 다름
+        + 수정 가능 (mutable)
+        + 원소의 타입에 제한 **있음**:
+      * 실습
+        + 실습1: 생성
+          ```python
+          # 중괄호 {} 사용
+          s1 = {1, 2, 3}
+          print(s1)  # {1, 2, 3}
+
+          # set() 함수 사용
+          s2 = set([1, 2, 2, 3])
+          print(s2)  # {1, 2, 3} (중복 제거)
+
+          # 빈 set 생성 시는 set()만 가능
+          empty_set = set()
+          print(empty_set)  # set()
+          ```
+        + 실습2: 변경
+          ```python
+          s = {1, 2, 3}
+
+          # 추가
+          s.add(4)           # {1, 2, 3, 4}
+          s.update([5, 6])   # {1, 2, 3, 4, 5, 6} (여러 개 추가)
+
+          # 삭제
+          s.remove(3)        # {1, 2, 4, 5, 6} (없는 값 제거 시 오류 발생)
+          s.discard(10)      # 없는 값 제거해도 오류 없음
+          s.pop()            # 임의의 값 제거 후 반환 (순서 없으니 랜덤)
+          ```
+
+    +  Misc.
+      * ```len``` built-in function중 하나
+        ```python
+        a=[3,4,5,'a','b']
+        len(a) # 정수 5
+        ```
+      * List slicing
+        ```python
+        a=[0,1,2,3,4,5]
+        # format
+        # a[begin:end:step]; end-begin = len(a)
+        a[::] # == a[0:6:1] ## default
+        a[1::2] # == a[1:6:2]
+        ```
+      * 실습
+        - 1족 원소 기호를 순서대로 포함한 리스트 만들기 (수소, 리튬, 나트륨, 칼륨, 루비듐, 세슘, 프랑슘)
+        - Calister 예제 2.1)
         ```python
         #세륨의 동위원소는 4가지 존재한다:
         # 각 동위원소의 분율은 아래와 같다.
@@ -240,7 +246,6 @@
         ## average
         print(avg)
         ```
-
 
 ## 수업 02-2
  - ```if```, ```elif```, ```else``` 조건문 이해
@@ -364,7 +369,7 @@
  - 목표
   + 함수와 클래스, 그리고 모듈의 이해
   + 함수를 만들어, 모듈화 시키고 CLI에서 실행할 수 있다.
- ## 수업 03-1
+## 수업 03-1
  - 함수란, 특정한 작업(task)를 수행하는 묶음.
     + basics
      ```def```로 정의하며, 재사용 가능하고(reuseable),
@@ -463,19 +468,531 @@
      ```
 
     실행 후 출력 결과 살펴보기
-
-
-
 # Week4 (file IO / NumPy 01 - 기초 배열(array) 이해)
+  - 목표
+  - 파일을 활용해 데이터 input/output의 활용 가능하다.
+  - NumPy 기초를 이해한다.
+## 수업 04-1 기초 (file/IO)
+  - 개념
+    + Python에서 파일을 다룰 때는 ```open()``` 함수
+    + 파일 모드
+      * 모드
+        - 'r' : read
+        - 'w' : write
+        - ~~'a' : append~~
+        - ~~'b' : binary~~
+        - ~~'+' : read & write~~
+    + 예시 (텍스트 파일 쓰기)
+      ```python
+      # 파일 쓰기
+      with open("example.txt", "w" encoding="utf-8") as f:
+        f.write("안녕하세요!\n")
+        f.write("파일 I/O 예제입니다.\n")
+      ```
+    + 예시 (텍스트 파일 읽기)
+      ```python
+      # 파일 읽기
+      with open("example.txt", "r", encoding="utf-8") as f:
+        lines = f.readlines()  # 모든 줄을 리스트로 읽기
+      for line in lines:
+        print(line.strip())  # strip() → 줄바꿈 제거
+      ```
+## 수업 04-1 및 04-2
+  - 개념
+    + [Numpy](www.numpy.org)는 고성능 수치 계산을 위한 library
+  - 설치 (인터넷 연결 필요)
+    ```sh
+    pip install numpy
+    ```
+  - import
+    ```python
+    import numpy as np
+    ```
+  - 배열 생성
+    ```python
+    # 1차원 배열
+    arr1 = np.array([1, 2, 3])
+    print(arr1)
+
+    # 2차원 배열
+    arr2 = np.array([[1, 2, 3], [4, 5, 6]])
+    print(arr2)
+
+    # 0으로 채운 배열
+    zeros_arr = np.zeros((2, 3))  # 2행 3열
+    print(zeros_arr)
+
+    # 1로 채운 배열
+    ones_arr = np.ones((3, 3))
+    print(ones_arr)
+
+    # 특정 값으로 채운 배열
+    full_arr = np.full((2, 2), 7)
+    print(full_arr)
+
+    # 연속된 수
+    range_arr = np.arange(0, 10, 2)  # 0부터 10 전까지 2씩 증가
+    print(range_arr)
+
+    # 랜덤 배열
+    rand_arr = np.random.rand(2, 3)  # 0~1 사이 난수
+    print(rand_arr)
+    ```
+  - 배열 속성
+    ```python
+    arr = np.array([[1, 2, 3], [4, 5, 6]])
+    print(arr.shape)   # (2, 3) → 2행 3열
+    print(arr.ndim)    # 차원 수 → 2
+    print(arr.size)    # 전체 원소 개수 → 6
+    print(arr.dtype)   # 데이터 타입 → int64 (환경에 따라 다름)
+    ```
+  - 배열 연산
+    * Vectorized operation (속도 향상)
+    * 반복문 필요 없음.
+    * element-wise operation 이라도 불림
+    ```python
+    a = np.array([1, 2, 3])
+    b = np.array([4, 5, 6])
+
+    print(a + b)   # [5 7 9]
+    print(a - b)   # [-3 -3 -3]
+    print(a * b)   # [ 4 10 18]  (요소별 곱)
+    print(a / b)   # [0.25 0.4 0.5]
+    print(a ** 2)  # [1 4 9]    (제곱)
+    ```
+  - Indexing & slicing
+    ```python
+    arr = np.array([[1, 2, 3], [4, 5, 6]])
+    # nested 배열의 각 축을 '행'(가로)과 '열'(세로)이라 하면
+    # arr = [  1  2  3 ] # 첫번째 가로
+    #.         4  5  6   # 두번째 가로
+
+    print(arr[0, 0])  # 1행 1열 → 1
+    print(arr[1, :])  # 2행 전체 → [4 5 6]
+    print(arr[:, 1])  # 모든 행의 2열 → [2 5]
+    ```
+  - 예제: 데이터 파일
+    Use data in here [matrix_01.txt](data/matrix_01.txt)
+    ```python
+    import numpy as np
+
+    # 공백 구분 텍스트 불러오기
+    matrix = np.loadtxt("matrix.txt")
+
+    print("불러온 행렬:")
+    print(matrix)
+
+    print("shape:", matrix.shape)   # (3, 3)
+    print("dtype:", matrix.dtype)   # ?
+    ```
+  - 예제: csv file
+    Use data in here [matrix_01.csv](data/matrix_01.csv)
+    ```python
+    import numpy as np
+
+    # 공백 구분 텍스트 불러오기
+    matrix = np.loadtxt("matrix.txt")
+
+    print("불러온 행렬:")
+    print(matrix)
+
+    print("shape:", matrix.shape)   # (3, 3)
+    print("dtype:", matrix.dtype)   # ?
+    ```
+  - 예제: 저장하기
+    ```python
+    # 행렬 저장하기 (공백 구분)
+    matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    np.savetxt("save_matrix.txt", matrix, fmt="%.2f")
+
+    # CSV로 저장
+    np.savetxt("save_matrix.csv", matrix, delimiter=",", fmt="%d")
+    ```
 # Week5 (NumPy 02 - 배열 연산(산술, 내적, 외적), 브로드캐스팅, 그외 기타 함수)
-# Week6 (NumPy 03 - Matrix, Determination, Eigen value)
+  - 목표
+    + 벡터/행렬 연산을 할 수 있다.
+    + 브로드 캐스팅을 이해한다.
+    + Determination, Eigen value 등을 계산할 수 있다.
+## 수업 05-1
+  - 벡터의 내적
+    $\boldsymbol a \cdot \boldsymbol b=a_1b_1+a_2b_2+a_3b_3=\sum_i^3a_ib_i$
+    List, len, range를 활용한다면 아래와 같이 표현 가능
+    ```python
+    a=[1,2,3]
+    b=[4,5,6]
+    dotprod=0.
+    for i in range(3):
+      dotprod=dotprod+a[i]*b[i]
+      ## 위를 `dotprod+=a[i]*b[i]`로 줄여서 표현 가능
+    ```
+
+    NumPy의 배열을 활용한다면?
+    ```python
+    a=np.array([1,2,3])
+    b=np.array([4,5,6])
+    dotprod=0.
+    for i in range(3):
+      dotprod+=a[i]*b[i]
+      ## 위를 `dotprod+=a[i]*b[i]`로 줄여서 표현 가능
+    ```
+  - 행렬간의 dot product
+
+    $$
+    \begin{bmatrix}
+    1 & 2 \\
+    3 & 4
+    \end{bmatrix}
+    \cdot
+    \begin{bmatrix}
+    2 & 0 \\
+    1 & 3
+    \end{bmatrix}
+    = ?
+    $$
+    ```python
+    A = np.array([[1, 2], [3, 4]])
+    B = np.array([[2, 0], [1, 3]])
+
+    print(A @ B)          # 행렬 곱
+    print(np.dot(A, B))   # 동일
+    ```
+
+    두 2x2 행렬 $\boldsymbol A$와 $\boldsymbol B$의 곱 결과가 또 다른 2x2행렬 $\boldsymbol C$라면
+    $$
+    \boldsymbol A\cdot\boldsymbol B = \boldsymbol C
+    $$
+    이를 **index**를 활용한 방식으로 표현가능하다.
+    $$
+    \sum_k^3A_{ik}B_{kj}=C_{ij}, \text{ for } i=1,2,3.
+    $$
+  - 외적
+    $$
+    \boldsymbol c = \boldsymbol a \times \boldsymbol b
+    \newline
+    c_i=\epsilon_{ijk}a_jb  _k
+    $$
+
+    ```python
+    import numpy as np
+
+    a = np.array([1, 2, 3])
+    b = np.array([4, 5, 6])
+
+    c = np.cross(a, b)
+    print(c)  # [-3  6 -3]
+    ```
+    예시 - tetrahedral site & octaheral site 크기 구하기
+  - Broadcasting
+    * 브로드캐스팅은 서로 다른 shape의 배열끼리 연산할 때 NumPy가 자동으로 차원을 맞춰주는 기능
+    * 예시 (1차원+0차원(스칼라))
+      ```python
+      arr = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+      print(arr + 10)  # [11 12 13 ... 19]
+      ```
+    * 예시 (2차원 + 1차원)
+      ```python
+      mat = np.array([[1, 2, 3],
+                      [4, 5, 6]])
+      vec = np.array([10, 20, 30])
+
+      print(mat + vec)
+      # [[11 22 33]
+      #  [14 25 36]]
+      ```
+    * 주의
+      뒤에서부터 비교하며 차원이 같거나 1이면 확장 가능
+      하나라도 불가능하면 에러 발생
+  - Other various features
+    ```python
+    arr = np.array([1, 4, 9, 16])
+
+    print(np.sqrt(arr))   # 제곱근 → [1. 2. 3. 4.]
+    print(np.exp(arr))    # e^x
+    print(np.log(arr))    # 자연로그
+    print(np.sin(arr))    # 사인 함수
+    print(np.mean(arr))   # 평균
+    print(np.sum(arr))    # 합
+    print(np.min(arr))    # 최소값
+    print(np.max(arr))    # 최대값
+    print(np.std(arr))    # 표준편차
+
+    arr = np.array([3, 1, 2])
+
+    print(np.sort(arr))        # 정렬된 배열
+    print(np.argsort(arr))     # 정렬 인덱스
+    print(np.argmax(arr))      # 최대값 인덱스
+    print(np.argmin(arr))      # 최소값 인덱스
+
+    ind=np.argsort(arr)
+    arr[ind] ## sorting 이 된 배열
+
+    # 추가 예제
+    names=['Michael','Jim','Pam','Dwight','Kevin','Creed']
+    scores=[5, 30, 20, 40, 10, 25]
+
+    inds=np.argsort(scores)
+    print(names[inds]) ## score에 따라 정렬된 배열
+    ```
+## 수업 05-2
+  - Einstein summation
+    + 벡터 스케일링 (스칼라 곱)
+      $$
+      c\boldsymbol a=\boldsymbol b
+      $$
+      이를 index 표기법으로 나타내면
+      $$
+      b_i=ca_i \text{ with } i=1,2,3
+      $$
+      ```python
+      ## List로 구현
+      c=0.3
+      a=[1,2,3]
+      b=[] # empty list
+      for i in range(3): ## iteration
+        b.append(c*a[i])
+
+      ## Numpy로 구현
+      c=0.3
+      a=np.array([1,2,3])
+      b=c*a ## broadcasting
+      ```
+    + 벡터 내적
+      $$
+      \boldsymbol a \cdot \boldsymbol b = \sum_i^3 a_ib_i=c
+      $$
+      위를 Einstein summation convention으로 표기하면
+      $$
+      \boldsymbol a \cdot \boldsymbol b = a_ib_i=c
+      $$
+      summation 기호($\sum$)가 생략되어 있음에 주목하시오.
+
+      ```python
+      ## Numpy없이 구현
+      a=[1,2,3]
+      b=[4,5,6]
+      c=0.
+      for i in range(3):
+        c+=a[i]*b[i]
+
+      ## Numpy로 구현
+      a=np.array([1,2,3])
+      b=np.array([4,5,6])
+      c=a*b  ## element-wise operation되는 것을 유념하라.
+             ## 즉 c=np.array([a[0]*b[0],a[1]*b[1],a[2]*b[2]])
+      c=c.sum()
+
+      #혹은 마지막 두 줄을 줄여서 아래와 같은 한줄의 명령어로 바꿀 수 있겠다.
+      c=(a*b).sum()
+      ```
+    + 행렬 벡터 곱
+      $$
+      \boldsymbol c = \boldsymbol A \cdot \boldsymbol v
+      \newline
+      c_i = \sum_j^3A_{ij}v_j \ \text{ for } i=1,2,3
+      $$
+      위를 Einstein summation convention으로 표기하면
+      $$
+      c_i=A_{ij}v_j
+      $$
+    + 행렬 곱 (single dot)
+      $$
+      \boldsymbol C = \boldsymbol A\cdot \boldsymbol B
+      \newline
+      C_{ij} = \sum_k^3 A_{ik}B_{kj} \text{ for } (i,j) \text{ of } (1,1), (1,2), ... , (3,2), (3,3)
+      $$
+
+      NumPy를 사용하지 않는다면 아래와 같은 예시로 표현될 수 있겠다.
+      ```python
+      A=[[1,2,3],[4,5,6],[7,8,9]]
+      B=[[3,2,1],[6,5,4],[9,8,7]]
+      C=[]
+      for i in range(3):
+        C.append([])
+        for j in range(3):
+          C[i].append(0)
+          for k in range(3):
+            C[i][j]+=A[i][k]*B[k][j]
+      ```
+
+      NumPy를 활용한다면?
+      ```python
+      import numpy as np
+      A=np.array([[1,2,3],[4,5,6],[7,8,9]])
+      B=np.array([[3,2,1],[6,5,4],[9,8,7]])
+      C=np.zeros((3,3))
+      for i in range(3):
+          for j in range(3):
+              for k in range(3):
+                  C[i,j]+=A[i,k]*B[k,j] ## Nested-list와 달리 ',' 콤마 기호로 각 축의 index를 활용한다.
+      print(C)
+      # 혹은 dot 활용하여
+      C=np.dot(A,B)
+      print(C)
+      # 혹은 더 줄여서 (python 3.5이상)
+      C=A@B # dtype 이 float로 바뀜
+      print(C)
+      ```
+    + 행렬 곱 (double dot)
+      $$
+      c=\boldsymbol A : \boldsymbol B
+      \newline
+      c=\sum_i\sum_jA_{ij}B_{ij}=\sum_j\sum_iA_{ij}B_{ij}=\sum_j\sum_iB_{ij}A_{ij}=\sum_i\sum_jB_{ij}A_{ij}
+      $$
+
+      파이썬 코드로 바꾸면...
+      ```python
+      A=[[1,2,3],[4,5,6],[7,8,9]]
+      B=[[3,2,1],[6,5,4],[9,8,7]]
+      ## 1
+      c=0.
+      for i in range(3): # i is outer
+        for j in range(3): # j is inner
+          c+=A[i][j]*B[i][j]
+      print(c)
+      ## 2, 안/바깥 for-loop 바뀜.
+      c=0.
+      for j in range(3): # j is outer
+        for i in range(3): # i is inner
+          c+=A[i][j]*B[i][j]
+      print(c)
+      ## 3. 안/바깥 for-loop 바뀜, 그리고 A와 B의 순서 바뀜
+      c=0.
+      for j in range(3): # j is outer
+        for i in range(3): # i is inner
+          c+=B[i][j]*A[i][j] # A[i][j] x B[i][j] 혹은 B[i][j] x A[i][j]
+      print(c)
+      ## 4. A와 B의 순서 바뀜
+      c=0.
+      for i in range(3): # i is outer
+        for j in range(3): # j is inner
+          c+=B[i][j]*A[i][j] # A[i][j] x B[i][j] 혹은 B[i][j] x A[i][j]
+      print(c)
+      ```
+
+      ```numpy```를 활용해서 표현해보자.
+      ```python
+      A=np.array([[1,2,3],[4,5,6],[7,8,9]])
+      B=np.array([[3,2,1],[6,5,4],[9,8,7]])
+      ##
+      c=0.
+      for i in range(3): # i is outer
+        for j in range(3): # j is inner
+          c+=A[i,j]*B[i,j]
+      ```
+
+# Week6 (NumPy 03 - ANN, Eigen value)
+## 수업 06-1 (ANN, Activation)
+  - Basic structure of Artificial Neural Network
+    + 행렬곱과 더하기 조합. 아래 수식은 실제로 Artifical Neutral Network(ANN)에서 널리 활용되는 형태의 연산이다.
+      $$
+      \boldsymbol y=\boldsymbol W\cdot \boldsymbol x + \boldsymbol b
+      \newline
+      y_i=\bigg(\sum_j^mW_{ij}x_j\bigg)+b_i=W_{ij}x_j+b_i \text{ with } i=1,2, ..., n
+      $$
+
+      ```python
+      W=np.array([[1,2,3,4],[5,6,7,8]]) ## 2x4 행렬 (with n and m beging 2 and 4, respectively)
+      x=np.array([5.5,0.1,0.3,1.0])     ## 4 (nested 가 아님. 1차원 임에 유의)
+      b=np.array([-0.5,+0.5])
+
+      n=2
+      m=4
+      y=np.zeros(n) # 주의 정수 n은 2이다.
+
+      for i in range(n): ## i=1,2,...,n
+        for j in range(m):
+          y[i]+=W[i,j]*x[j]+b[i]
+      print(y)
+      ## 위 표현은 틀렸다.
+      ## 올바른 표현의 예는 아래와 같다. 무엇이 고쳐졌는가?
+      n=2
+      m=4
+      y=np.zeros(n)
+      for i in range(n): ## i=1,2,...,n
+        y[i]+=b[i]
+        for j in range(m):
+          y[i]+=W[i,j]*x[j]
+      print(y)
+      ```
+
+    + 예시 ```W[n,m]```행렬과 ```x[m]```벡터, 그리고 ```b[n]```벡터로 구성된
+      배열을 활용해 위 수식 $\boldsymbol v=\boldsymbol W\cdot \boldsymbol x + \boldsymbol b$을
+      계산하여 리턴하는 함수를 만드시오.
+
+      ```python
+      def neuron(w,x,b):
+          """
+          Arguments
+          ---------
+          W: ndarray
+           [m x n] matrix (weight)
+          b: ndarray
+           [n] vector (bias)
+
+          Returns
+          -------
+          W.x + b
+          """
+          n,m=w.shape() # tuple
+          y=np.zeros(n)
+          for i in range(n):
+            y[i]+=b[i]
+            for j in range(m):
+              y[i]+=w[i,j]*x[j]
+          return y
+      ```
+  - Activation
+    + neutral network에 쓰이는 일반적인 neutron은 다음 형태를 가지는 경우가 많다.
+      $$
+      y_k=\phi\bigg(\sum_{j}^mw_{kj}x_j+b_k\bigg)
+      $$
+      이 때 $\phi$는 activation function이라 불리며 다양한 형태가 사용되고 있다.
+      우리는 이를 element-wise로 적용되는 함수라 보자.
+    + Activation function
+      * Binary step
+        $$
+        \phi(x_i)=0 \text{ if } x_i<0
+        \newline
+        \phi(x_i)=1 \text{ if } x_i\geq0
+        $$
+
+        ```python
+        def act_func_binary(x):
+          """
+          """
+          flg=x>=0
+          y=np.zeros(x.shape)
+          y[flg]=1.
+          return y
+        ```
+      * 예시 (Logistic function)
+        $$
+        \phi(x_i)=\frac{1}{1+e^{-x_i}}
+        $$
+      * 예시: Rectified linear unit (ReLU)
+
+## 수업 06-2 (Eigen value)
 # Week7 (중간고사)
+## 수업 05-1
+## 수업 05-2
 # Week8 (Matplotlib 01)
+## 수업 05-1
+## 수업 05-2
 # Week9 (Matplotlib 02)
-# Week10 (Matplotlib + NumPy 01 + Slicing)
-# Week11 (Matplotlib + NumPy 02 + FILE I/O)
-# Week12 (Matplotlib + NumPy 03 + File I/O)
+## 수업 05-1
+## 수업 05-2
+# Week10 (Matplotlib + transforming)
+## 수업 05-1
+## 수업 05-2
+# Week11 (Matplotlib, contouring, color-coding)
+## 수업 05-1
+## 수업 05-2
+# Week12 (Matplotlib imaging, color-coding)
+## 수업 05-1
+## 수업 05-2
 # Week13 (내삽과 외삽, 선형회귀)
+## 수업 13-1
+## 수업 13-2
  - 실습 예시
     * 금속 합금 조성 (Cu %) vs 전기 전도도
 ```python
@@ -495,5 +1012,9 @@ plt.legend()
 plt.show()
 ```
 # Week14
+## 수업 14-1
+## 수업 14-2
 # Week15 (기말고사)
+## 수업 15-1
+## 수업 15-2
 s
