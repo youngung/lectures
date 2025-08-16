@@ -407,6 +407,38 @@
     myAl.add_density(2.70)
     myAl.add_structure('FCC')
     ```
+  - ```getattr``` built-in 함수
+    + 기본문법
+      ```python
+      getattr(object, name[, default])
+      ```
+      - object : 속성을 가져올 대상 객체
+      - name : 속성 이름 (문자열로 지정)
+      - default (선택적) : 해당 속성이 없을 경우 반환할 기본값 (없으면 AttributeError 발생)
+    + 예제
+      ```python
+      class Alloy:
+        def __init__(self, name, tensile_strength, ductility, density):
+            self.name = name
+            self.tensile_strength = tensile_strength  # MPa
+            self.ductility = ductility                # %
+            self.density = density                    # g/cm^3
+
+      # 합금 데이터
+      a1 = Alloy("Ni-Cu", 450, 35, 8.9)
+      a2 = Alloy("Al-Mg", 320, 25, 2.7)
+      a3 = Alloy("Ti-6Al-4V", 900, 14, 4.4)
+
+      alloys = [a1, a2, a3]
+
+      # 동적으로 특정 물성(property)을 가져오기
+      property_to_check = "tensile_strength"  # 여기만 바꾸면 됨
+
+      for alloy in alloys:
+          value = getattr(alloy, property_to_check, "N/A")
+          print(f"{alloy.name}: {property_to_check} = {value}")
+      ```
+
 
  - 여러 함수 만들어 보기
    + 위치 인자 (*args); tuple
@@ -460,7 +492,7 @@
 
      - (Windows 환경 예시)
      ```sh
-     c:\users\user\repo\mse> python ex02.py a b c 1 2 3
+     c:\users\user\repo\mse> python ex02.py a b c 1 23
      ```
      - (MacOS/Linux 환경 예시)
      ```sh
@@ -608,15 +640,31 @@
     # CSV로 저장
     np.savetxt("save_matrix.csv", matrix, delimiter=",", fmt="%d")
     ```
-# Week5 (NumPy 02 - 배열 연산(산술, 내적, 외적), 브로드캐스팅, 그외 기타 함수)
+# Week5 (NumPy 02 - 배열 연산(산술, 내적, 외적), 브로드캐스팅, 그 외 기타 함수)
   - 목표
     + 벡터/행렬 연산을 할 수 있다.
     + 브로드 캐스팅을 이해한다.
     + Determination, Eigen value 등을 계산할 수 있다.
 ## 수업 05-1
+  - 벡터의 크기
+    벡터
+    $$
+    \boldsymbol a
+    $$
+    의 크기는
+    $$
+    |\boldsymbol a|=\sqrt{a_1^2+a_2^2+a_3^2}=\sqrt{\sum_i^3a_i^2}
+    $$
   - 벡터의 내적
-    $\boldsymbol a \cdot \boldsymbol b=a_1b_1+a_2b_2+a_3b_3=\sum_i^3a_ib_i$
-    List, len, range를 활용한다면 아래와 같이 표현 가능
+    $$
+    \boldsymbol a \cdot \boldsymbol b=a_1b_1+a_2b_2+a_3b_3=\sum_i^3a_ib_i
+    $$
+    혹은 아래와 같이 두 벡터 사이의 끼인 각 $\theta$ 를 활용해 표현할 수 있다.
+    $$
+    \boldsymbol a \cdot \boldsymbol b=|\boldsymbol a||\boldsymbol b|\cos\theta
+    $$
+    ```List```, ```len```, ```range```, ~~```enumerate```~~를 활용하여
+    아래와 같이 표현 가능
     ```python
     a=[1,2,3]
     b=[4,5,6]
@@ -633,7 +681,6 @@
     dotprod=0.
     for i in range(3):
       dotprod+=a[i]*b[i]
-      ## 위를 `dotprod+=a[i]*b[i]`로 줄여서 표현 가능
     ```
   - 행렬간의 dot product
 
@@ -657,19 +704,25 @@
     print(np.dot(A, B))   # 동일
     ```
 
-    두 2x2 행렬 $\boldsymbol A$와 $\boldsymbol B$의 곱 결과가 또 다른 2x2행렬 $\boldsymbol C$라면
+    두 2x2 행렬
+    $$\boldsymbol A$$
+    와
+    $$\boldsymbol B$$
+    의 곱 결과가 또 다른 2x2행렬 $$\boldsymbol C$$
+    이라면
     $$
     \boldsymbol A\cdot\boldsymbol B = \boldsymbol C
     $$
-    이를 **index**를 활용한 방식으로 표현가능하다.
+    와 같이 표현할 수 있다. 이를 **index**를 활용한 방식으로 아래와 같이 표기 가능하다.
     $$
     \sum_k^3A_{ik}B_{kj}=C_{ij}, \text{ for } i=1,2,3.
     $$
   - 외적
     $$
     \boldsymbol c = \boldsymbol a \times \boldsymbol b
-    \newline
-    c_i=\epsilon_{ijk}a_jb  _k
+    $$
+    $$
+    c_i=\epsilon_{ijk}a_jb_k
     $$
 
     ```python
@@ -756,15 +809,71 @@
       a=np.array([1,2,3])
       b=c*a ## broadcasting
       ```
+    + 단위 벡터 (unit)
+      벡터
+      $$\boldsymbol a$$
+      의 크기가 1 이라면, 벡터
+      $$\boldsymbol a$$
+      를 단위 벡터라 부른다.
+      * 주어진 한 벡터 $$\boldsymbol a$$의 단위 벡터를
+        $$\bar{\boldsymbol a}$$
+        라 할 때 아래와 같이 그 관계가 표현될 수 있다.
+        $$
+        \bar{\boldsymbol a}=\frac{\boldsymbol a}{|\boldsymbol a|}
+        $$
+        혹은 인덱스를 활용해 아래와 같이 표현된다.
+        $$
+        \bar{a}_i=\frac{a_i}{\sqrt{a_1^2+a_2^2+a_3^2}}
+        $$
+        따라서
+        $$
+
+        $$
+      * 예시:
+        주어진 벡터
+        $$\boldsymbol a$$
+        와 방향은 같으나 크기가 1인 단위 벡터를 구하시오.
+        ```python
+        a=[3,4,5]
+        magnitude=0. ## 벡터 크기
+        for i in range(len(a)):
+          magnitude+=a[i]**2
+        magnitude=magnitude**0.5 ## sqrt(a)
+        for i in range(len(a)):
+          a[i]=a[i]/mag
+        print(bar_a)
+        ```
+
+        위를 numpy를 활용하면
+        ```python
+        import numpy as np
+        old_a=np.array([3,4,5])
+        new_a=old_a**2
+        mag=np.sqrt(new_a.sum())
+        bar_a=old_a/mag
+        print(bar_a)
+        ```
+        혹은 더욱 축약한다면
+        ```python
+        import nump as np
+        old_a=np.array([3,4,5])
+        bar_a=old_a/np.sqrt((old_a**2).sum())
+        print(bar_a)
+        ```
+
     + 벡터 내적
       $$
       \boldsymbol a \cdot \boldsymbol b = \sum_i^3 a_ib_i=c
       $$
-      위를 Einstein summation convention으로 표기하면
+      위를 [Einstein summation convention](https://ko.wikipedia.org/wiki/아인슈타인_표기법)으로 표기하면
       $$
       \boldsymbol a \cdot \boldsymbol b = a_ib_i=c
       $$
-      summation 기호($\sum$)가 생략되어 있음에 주목하시오.
+      summation 기호
+      $$
+      \sum
+      $$
+      가 생략되어 있음에 주목하시오.
 
       ```python
       ## Numpy없이 구현
@@ -773,16 +882,18 @@
       c=0.
       for i in range(3):
         c+=a[i]*b[i]
-
+      print(c)
       ## Numpy로 구현
       a=np.array([1,2,3])
       b=np.array([4,5,6])
       c=a*b  ## element-wise operation되는 것을 유념하라.
              ## 즉 c=np.array([a[0]*b[0],a[1]*b[1],a[2]*b[2]])
       c=c.sum()
+      print(c)
 
       #혹은 마지막 두 줄을 줄여서 아래와 같은 한줄의 명령어로 바꿀 수 있겠다.
       c=(a*b).sum()
+      print(c)
       ```
     + 행렬 벡터 곱
       $$
@@ -879,7 +990,6 @@
         for j in range(3): # j is inner
           c+=A[i,j]*B[i,j]
       ```
-
 # Week6 (NumPy 03 - ANN, Eigen value)
 ## 수업 06-1 (ANN, Activation)
   - Basic structure of Artificial Neural Network
@@ -959,6 +1069,7 @@
         ```python
         def act_func_binary(x):
           """
+          Binary function as the activation function for neuron
           """
           flg=x>=0
           y=np.zeros(x.shape)
@@ -970,26 +1081,260 @@
         \phi(x_i)=\frac{1}{1+e^{-x_i}}
         $$
       * 예시: Rectified linear unit (ReLU)
-
+        $$
+        \phi(x_i)=\frac{x+|x|}{2}
+        $$
 ## 수업 06-2 (Eigen value)
+  - 개념
+    + 고유값(eigen value): 행렬(특히 선형변환)을 적용했을 때, 크기만 변하고 방향은 변하지 않는 벡터의 크기 변화 비율.
+    + 고유벡터(eigen vector): 그 “변하지 않는 방향”을 가지는 벡터.
+    + 수식:
+      $$
+      \boldsymbol A\cdot \boldsymbol v = \lambda \boldsymbol v
+      $$
+      를 만족시키는 스칼라 $$\lambda$$ 값을 고유값이라 한다.
+
+      위 관계를 만족시키는 고유값 세개가 각각 $$\lambda_1,\lambda_2,\lambda_3$$라면
+
+      $$\lambda_1\boldsymbol v,\lambda_2\boldsymbol v,\lambda_3\boldsymbol v$$
+      를 고유 벡터라 한다.
+  - 예시
+    + 2차원 예시01
+      $$
+      \begin{bmatrix}
+      A_{11}&A_{12}\\
+      A_{21}&A_{22}
+      \end{bmatrix}
+      \begin{bmatrix}
+      v_1\\
+      v_2
+      \end{bmatrix}
+      =
+      \lambda
+      \begin{bmatrix}
+      v_1\\
+      v_2
+      \end{bmatrix}
+      $$
+
+      $$
+      A_{11}v_1+A_{12}v_2=\lambda v_1\ \ \ \ (1)
+      \newline
+      A_{21}v_1+A_{22}v_2=\lambda v_2\ \ \ \ (2)
+      \newline
+      $$
+      (1)식을 고치면,
+      $$
+      (A_{11}-\lambda)v_1=-A_{12}v_2
+      \newline
+      $$
+      따라서
+      $$
+      v_1=\frac{-A_{12}}{A_{11}-\lambda}v_2
+      $$
+      (2)에 대입하면
+      $$
+      \frac{-A_{21}A_{12}}{A_{11}-\lambda}v_2+A_{22}v_2=\lambda v_2\ \ \ \ (3)
+      $$
+
+      (3)의
+      $$
+      v_2=0
+      $$
+      인 해는 trivial. 이걸 제외하면,
+
+      $$
+      \frac{-A_{21}A_{12}}{A_{11}-\lambda}+A_{22}=\lambda
+      $$
+      정리하면
+      $$
+      -A_{21}A_{12}+A_{22}(A_{11}-\lambda)=\lambda(A_{11}-\lambda)
+      $$
+
+      위는 $\lambda$에 대한 2차 방정식이며
+
+      $$
+      \lambda^2-(A_{11}-A_{22})\lambda-A_{21}A_{12}+A_{22}A_{11}=0
+      $$
+    + 2차원 예시02
+      $$
+      \boldsymbol A\cdot \boldsymbol v = \lambda \boldsymbol v
+      \ \ \
+      \rightarrow
+      \ \ \
+      (\boldsymbol A-\lambda\boldsymbol I)\cdot v=0
+      $$
+
+      $$
+      \boldsymbol A =
+      \begin{bmatrix}
+      A_{11}& A_{12}\\
+      A_{21}& A_{22}
+      \end{bmatrix}
+      $$
+      그리고
+      $$
+      \boldsymbol I =
+      \begin{bmatrix}
+      1& 0\\
+      0& 1
+      \end{bmatrix}
+      $$
+
+      고유값 $\lambda$는 아래와 같이 구해진다.
+      $$
+      \det(\boldsymbol A-\lambda\boldsymbol I)=0
+      $$
+
+
+      ```python
+      import numpy as np
+      def eig2x2(A):
+          a=A[0,0]
+          b=A[0,1]
+          c=A[1,0]
+          d=A[1,1]
+          tr = a + d
+          det = a*d - b*c
+          disc = tr*tr - 4*det
+          lam1 = (tr + np.sqrt(disc)) / 2
+          lam2 = (tr - np.sqrt(disc)) / 2
+          return lam1, lam2
+
+      A = np.array([[3,2],[2,1]], dtype=float)
+      lam1, lam2 = eig2x2(A)
+      print("manual:", lam1, lam2)
+      print("numpy :", np.linalg.eigvals(A))
+      ```
+
+    - 예시
+      주어진 [파일](data/matrix_03.txt)의 매트릭스의 값들을 활용해서 각 파일에서 고유값들을 구해서
+      출력하시오.
+      ```python
+      import numpy as np
+      def eig2x2(A):
+          a=A[0,0]
+          b=A[0,1]
+          c=A[1,0]
+          d=A[1,1]
+          tr = a + d
+          det = a*d - b*c
+          disc = tr*tr - 4*det
+          lam1 = (tr + np.sqrt(disc)) / 2
+          lam2 = (tr - np.sqrt(disc)) / 2
+          return lam1, lam2
+      d=np.loadtxt('../data/matrix_03.txt',skiprows=1)
+      for i, mat2x2 in enumerate(d):
+          mat=mat2x2.reshape(2,2)
+          print(eig2x2(mat)) ## nan 은 어던 경우인가?
+      ```
 # Week7 (중간고사)
-## 수업 05-1
-## 수업 05-2
+## 수업 07-1
+- 목표
+  + 복습, 출제 방향 설명
+## 수업 07-2
 # Week8 (Matplotlib 01)
-## 수업 05-1
-## 수업 05-2
-# Week9 (Matplotlib 02)
-## 수업 05-1
-## 수업 05-2
-# Week10 (Matplotlib + transforming)
-## 수업 05-1
-## 수업 05-2
-# Week11 (Matplotlib, contouring, color-coding)
-## 수업 05-1
-## 수업 05-2
-# Week12 (Matplotlib imaging, color-coding)
-## 수업 05-1
-## 수업 05-2
+- 목표
+  + axes, figure 를 만들 수 있다.
+  + 선(line), 점(dot)으로 이루어진 그래프를 그릴 수 있다.
+  + x축, y축의 label, tick, limits을 만들 수 있다.
+  + linear scale, logscale을 만들고 이해할 수 있다.
+  + 파일로부터 데이터를 불러오고, 이를 graph로 바꿀 수 있다.
+## 수업 08-1
+  + [Matplotlib](www.matplotlib.org): Python에서 데이터를 시각화하는 가장 널리 쓰이는 라이브러리.
+  + 주로 사용되는 인터페이스: pyplot 모듈
+  + plt interface
+      ```python
+      import matplotlib.pyplot as plt
+      import matplotlib.pyplot as plt
+
+      x = [0, 1, 2, 3, 4]
+      y = [0, 1, 4, 9, 16]
+
+      plt.plot(x, y)          # 선 그래프
+      plt.title("Basic Line Plot")
+      plt.xlabel("X-axis")
+      plt.ylabel("Y-axis")
+      ```
+    - scatter plot
+      ```python
+      x = [5, 7, 8, 7, 6, 9, 5, 4, 5, 6]
+      y = [99, 86, 87, 88, 100, 86, 103, 87, 94, 78]
+      plt.scatter(x, y, color='red')
+      plt.title("Scatter Plot")
+    ```
+
+    - 그래프 꾸미기
+    ```python
+    plt.plot([1,2,3],[1,4,9], label=r'$y = x^2$')
+    plt.plot([1,2,3],[1,2,3], label=r'$y = x$')
+    plt.legend() ## legend
+    ```
+
+    - subplot
+    ```python
+    plt.subplot(1, 2, 1)  # 1행 2열 중 첫 번째
+    plt.plot([1,2,3],[1,4,9])
+    plt.title("Left")
+
+    plt.subplot(1, 2, 2)  # 두 번째
+    plt.plot([1,2,3],[1,2,3])
+    plt.title("Right")
+    ```
+
+  + Figure / axis objects
+    Figure: 그래프 전체 "캔버스"
+    Axes: 실제 데이터가 그려지는 "좌표 영역"
+    (한 Figure 안에 여러 개의 Axes 가능: subplot)
+    ```python
+    import matplotlib.pyplot as plt
+
+    # Figure(도화지), Axes(좌표 영역) 생성
+    fig, ax = plt.subplots()
+
+    x = [0, 1, 2, 3, 4]
+    y = [0, 1, 4, 9, 16]
+
+    # ax 객체를 활용해 데이터 플롯
+    ax.plot(x, y, label="y = x^2", color="blue")
+
+    # 그래프 꾸미기
+    ax.set_title("Figure & Axes Example")
+    ax.set_xlabel("X-axis")
+    ax.set_ylabel("Y-axis")
+    ax.legend()
+    ax.grid(True)
+
+    plt.show()
+    ```
+  + 예제
+    - Stress vs. strain curve 그리기
+    - Tensile strength vs. ductility
+
+## 수업 08-2
+
+# Week9 (Force vs. Disp curve 분석)
+- 목표
+  + EBSD 데이터를 소개하고, 이를
+## 수업 09-1
+## 수업 09-2
+# Week10 (Matplotlib + Hall-petch equations, Creep data)
+## 수업 10-1
+## 수업 10-2
+# Week11 (무게비 원자비)
+## 수업 11-1 (무게비 원자비 변환)
+  - 무게비 원자비 변환
+    $$
+    C_a=\frac{m_a}{m_a+m_b}\times 100 (wt\%)
+    $$
+
+    $$
+    C^\prime_a=\frac{m_a}{m_a+m_b}\times 100 (wt\%)
+    $$
+## 수업 11-2
+# Week12 (Matplotlib imaging, color-coding,  EBSD 데이터 분석)
+## 수업 12-1
+## 수업 12-2
 # Week13 (내삽과 외삽, 선형회귀)
 ## 수업 13-1
 ## 수업 13-2

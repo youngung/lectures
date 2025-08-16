@@ -38,4 +38,4 @@ if __name__=='__main__':
             fo.write(f'{head}\n')
             ## add link to latex to allow rendering equations with using latex.
             fo.write('<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>')
-            fo.write(f'\n{bl}')
+            fo.write(f'\n# Week {bl}')
