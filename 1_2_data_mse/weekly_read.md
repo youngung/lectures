@@ -370,7 +370,7 @@
   + 함수와 클래스, 그리고 모듈의 이해
   + 함수를 만들어, 모듈화 시키고 CLI에서 실행할 수 있다.
 ## 수업 03-1
- - 함수란, 특정한 작업(task)를 수행하는 묶음.
+  - 함수란, 특정한 작업(task)를 수행하는 묶음.
     + basics
      ```def```로 정의하며, 재사용 가능하고(reuseable),
     입력(arguments), 출력(return)값을 가질 수 있습니다.
@@ -387,8 +387,7 @@
     ```
     + built-in functions
      A full list of built-in functions: [here](https://docs.python.org/3/library/functions.html)
-
- - class 란
+  - class 란
     ```python
     class Atom:
         def __init__(self,name):
@@ -438,68 +437,117 @@
           value = getattr(alloy, property_to_check, "N/A")
           print(f"{alloy.name}: {property_to_check} = {value}")
       ```
+  - 여러 함수 만들어 보기
+    + Hooke's law
+      $$
+      \sigma = E \varepsilon
+      $$
+      ```python
+      def hooke(modulus,epsilon):
+        return modulus * epsilon
+      ```
+    + Engineering strain & true strain
+      $$
+      \epsilon=\frac{\Delta l}{l_0}
+      $$
+      ```python
+      def calc_engi_strain(l0,l1):
+        delta_l=l1-l0
+        return delta_l/l0
+      ```
+    + True strain
+      $$
+      \varepsilon=\ln(\epsilon+1)
+      $$
+      ```python
+      def calc_true_strain(engi_eps):
+        import math
+        true_eps=math.log(1+engi_eps) ## log function with base of e.
+        return true_eps
+      ```
+    + 예시: 길이 변화를 주면 true strain을 계산하는 함수를 작성하시오.
+    + Schmid law
+      $$
+      \tau=\sigma \cos\phi \cos\lambda
+      $$
+      ```python
+      def schmid(sigma,phi,lambda):
+        """
+        Arguments
+        ---------
+        sigma: float
+          uniaxial stress
+        phi: float (in radian)
+          angle between the slip plane normal and the loading direction
+        lambda: float (in radian)
+          angle between the slip direction and the loading direction
 
-
- - 여러 함수 만들어 보기
-   + 위치 인자 (*args); tuple
-   + 키워드 인자 (keyword arguments; **kwargs); dictionary 활용
-    ```python
-    def get_sum(*args):
-        sum=0.
-        for arg in args:
-            sum=sum+arg
-        return sum
-    get_sum(1,2,3,4,5,6,7) #? what's going to be the correct answer?
-    def introduce(**kwargs):
-        for key, value in kwargs.items():
-            print(f"{key}: {value}")
-    introduce(name="Alice", age=25, country="Korea")
-    ```
+        Returns
+        -------
+        Schmid factor
+        """
+        import math
+        return sigma*math.cos(phi)*math.cos(lambda)
+      ```
+    + 위치 인자 (*args); tuple
+    + 키워드 인자 (keyword arguments; **kwargs); dictionary 활용
+      ```python
+      def get_sum(*args):
+          sum=0.
+          for arg in args:
+              sum=sum+arg
+          return sum
+      get_sum(1,2,3,4,5,6,7) #? what's going to be the correct answer?
+      def introduce(**kwargs):
+          for key, value in kwargs.items():
+              print(f"{key}: {value}")
+      introduce(name="Alice", age=25, country="Korea")
+      ```
 ## 수업 03-2
- - CLI (command-line interface)
- - 모듈화 (modularization)
-   + 프로그램을 기능별로 나뉘어 파일(모듈)로 분리
-   + 코드 재사용성(reuseability) 향상, 유지보수 용이, 협업시 효율성 증가
-   + 모듈(module)은 ```.py``` 파일을 가르킨다.
-   + 패키지는 여러 모듈의 모임이다.
-   + 라이브러리(library)는 모듈과 패키지의 모임.
- - 예시/실습
-   + ex 01: 가장 간단한 모듈화
-    ```python
-    # 아래 모듈을 작성 후 mymodule.py로 저장하자.
-    def add(a, b):
-        return a + b
+  - CLI (command-line interface)
+  - 모듈화 (modularization)
+    + 프로그램을 기능별로 나뉘어 파일(모듈)로 분리
+    + 코드 재사용성(reuseability) 향상, 유지보수 용이, 협업시 효율성 증가
+    + 모듈(module)은 ```.py``` 파일을 가르킨다.
+    + 패키지는 여러 모듈의 모임이다.
+    + 라이브러리(library)는 모듈과 패키지의 모임.
+  - 예시/실습
+    + ex 01: 가장 간단한 모듈화
+      ```python
+      # 아래 모듈을 작성 후 mymodule.py로 저장하자.
+      def add(a, b):
+          return a + b
 
-    def multiply(a, b):
-        return a * b
-    ```
-    그 다음 아래를 활용해 mymodule을 불러와 보자.
-    ```python
-    import mymodel
-    mymodule.add(3,4)
-    mymodule.multiply(3,4)
-    ```
+      def multiply(a, b):
+          return a * b
+      ```
+      그 다음 아래를 활용해 mymodule을 불러와 보자.
+      ```python
+      import mymodel
+      mymodule.add(3,4)
+      mymodule.multiply(3,4)
+      ```
 
-   + ex 02: CLI에서 arguments 받기
-    ```python
-    # file: ex02.py
-    import sys
+    + ex 02: CLI에서 arguments 받기
+      ```python
+      # file: ex02.py
+      import sys
 
-    if __name__ == "__main__":
-        print("Arguments:", sys.argv)
-    ```
-    Arguments의 역할을 이해하기 위해서 아래 실행
+      if __name__ == "__main__":
+          print("Arguments:", sys.argv)
+      ```
+      - Arguments의 역할을 이해하기 위해서 아래 실행
 
-     - (Windows 환경 예시)
-     ```sh
-     c:\users\user\repo\mse> python ex02.py a b c 1 23
-     ```
-     - (MacOS/Linux 환경 예시)
-     ```sh
-     ~/repo/mse $ python ex02.py a b c 1 2 3
-     ```
-
-    실행 후 출력 결과 살펴보기
+        - (Windows 환경 예시)
+        ```sh
+        c:\users\user\repo\mse> python ex02.py a b c 1 23
+        ```
+        - (MacOS/Linux 환경 예시)
+        ```sh
+        ~/repo/mse $ python ex02.py a b c 1 2 3
+        ```
+        실행 후 출력 결과 살펴보기
+      - Argparse 활용
 # Week4 (file IO / NumPy 01 - 기초 배열(array) 이해)
   - 목표
   - 파일을 활용해 데이터 input/output의 활용 가능하다.
@@ -529,7 +577,39 @@
       for line in lines:
         print(line.strip())  # strip() → 줄바꿈 제거
       ```
-## 수업 04-1 및 04-2
+    + 예시 (성적 처리)
+
+      다음 [파일](data/score_record_2017_MF_final_analysis.txt)을 읽고
+      평균, 표준 편차, 그리고 최고점과 최저점을 받은 학생 번호를 찾는 파이썬 프로그램을
+      만들어 보자.
+
+    + 예시 (모든 파일의 이름 바꾸기)
+      다음 [압축파일](data/tensile_test_results.zip)을 풀어서 살펴보자.
+      여기서 파일 이름에서 'WZ'를 모두 'EX'로 바꾸고 싶다. 어떻게 해야할까?
+      ```dos
+      c:\users\user> ren 00_DD_WZ_01.csv 00_DD_EX_01.csv
+      c:\users\user> ren 00_DD_WZ_02.csv 00_DD_EX_02.csv
+      ...
+      ```
+
+      혹은 복사?
+      ```dos
+      c:\users\user> ren 00_DD_WZ_01.csv 00_DD_EX_01.csv
+      c:\users\user> ren 00_DD_WZ_02.csv 00_DD_EX_02.csv
+      ...
+      ```
+
+      혹은 마우스로 일일이 눌러서 바꿀 수도 있겠다.
+
+      하지만 Python으로 가능할까?
+      ```
+      # os.copy
+      # glob
+      # os.getcwd()
+      # os.listdir(os.getcwd())
+      # `str`의 split을 찾거나, 혹은 index를 활용해 바꿀 수도 있겠다.
+      ```
+## 수업 04-2
   - 개념
     + [Numpy](www.numpy.org)는 고성능 수치 계산을 위한 library
   - 설치 (인터넷 연결 필요)
@@ -815,8 +895,14 @@
       의 크기가 1 이라면, 벡터
       $$\boldsymbol a$$
       를 단위 벡터라 부른다.
-      * 주어진 한 벡터 $$\boldsymbol a$$의 단위 벡터를
-        $$\bar{\boldsymbol a}$$
+      * 주어진 한 벡터
+        $$
+        \boldsymbol a
+        $$
+        의 단위 벡터를
+        $$
+        \bar{\boldsymbol a}
+        $$
         라 할 때 아래와 같이 그 관계가 표현될 수 있다.
         $$
         \bar{\boldsymbol a}=\frac{\boldsymbol a}{|\boldsymbol a|}
@@ -824,10 +910,6 @@
         혹은 인덱스를 활용해 아래와 같이 표현된다.
         $$
         \bar{a}_i=\frac{a_i}{\sqrt{a_1^2+a_2^2+a_3^2}}
-        $$
-        따라서
-        $$
-
         $$
       * 예시:
         주어진 벡터
@@ -843,8 +925,7 @@
           a[i]=a[i]/mag
         print(bar_a)
         ```
-
-        위를 numpy를 활용하면
+        위를 Numpy를 활용하면
         ```python
         import numpy as np
         old_a=np.array([3,4,5])
@@ -860,7 +941,6 @@
         bar_a=old_a/np.sqrt((old_a**2).sum())
         print(bar_a)
         ```
-
     + 벡터 내적
       $$
       \boldsymbol a \cdot \boldsymbol b = \sum_i^3 a_ib_i=c
@@ -898,7 +978,8 @@
     + 행렬 벡터 곱
       $$
       \boldsymbol c = \boldsymbol A \cdot \boldsymbol v
-      \newline
+      $$
+      $$
       c_i = \sum_j^3A_{ij}v_j \ \text{ for } i=1,2,3
       $$
       위를 Einstein summation convention으로 표기하면
@@ -908,7 +989,8 @@
     + 행렬 곱 (single dot)
       $$
       \boldsymbol C = \boldsymbol A\cdot \boldsymbol B
-      \newline
+      $$
+      $$
       C_{ij} = \sum_k^3 A_{ik}B_{kj} \text{ for } (i,j) \text{ of } (1,1), (1,2), ... , (3,2), (3,3)
       $$
 
@@ -925,7 +1007,7 @@
             C[i][j]+=A[i][k]*B[k][j]
       ```
 
-      NumPy를 활용한다면?
+      ```numpy```를 활용한다면?
       ```python
       import numpy as np
       A=np.array([[1,2,3],[4,5,6],[7,8,9]])
@@ -946,7 +1028,8 @@
     + 행렬 곱 (double dot)
       $$
       c=\boldsymbol A : \boldsymbol B
-      \newline
+      $$
+      $$
       c=\sum_i\sum_jA_{ij}B_{ij}=\sum_j\sum_iA_{ij}B_{ij}=\sum_j\sum_iB_{ij}A_{ij}=\sum_i\sum_jB_{ij}A_{ij}
       $$
 
@@ -996,7 +1079,8 @@
     + 행렬곱과 더하기 조합. 아래 수식은 실제로 Artifical Neutral Network(ANN)에서 널리 활용되는 형태의 연산이다.
       $$
       \boldsymbol y=\boldsymbol W\cdot \boldsymbol x + \boldsymbol b
-      \newline
+      $$
+      $$
       y_i=\bigg(\sum_j^mW_{ij}x_j\bigg)+b_i=W_{ij}x_j+b_i \text{ with } i=1,2, ..., n
       $$
 
@@ -1024,7 +1108,6 @@
           y[i]+=W[i,j]*x[j]
       print(y)
       ```
-
     + 예시 ```W[n,m]```행렬과 ```x[m]```벡터, 그리고 ```b[n]```벡터로 구성된
       배열을 활용해 위 수식 $\boldsymbol v=\boldsymbol W\cdot \boldsymbol x + \boldsymbol b$을
       계산하여 리턴하는 함수를 만드시오.
@@ -1062,7 +1145,8 @@
       * Binary step
         $$
         \phi(x_i)=0 \text{ if } x_i<0
-        \newline
+        $$
+        $$
         \phi(x_i)=1 \text{ if } x_i\geq0
         $$
 
@@ -1119,14 +1203,13 @@
 
       $$
       A_{11}v_1+A_{12}v_2=\lambda v_1\ \ \ \ (1)
-      \newline
+      $$
+      $$
       A_{21}v_1+A_{22}v_2=\lambda v_2\ \ \ \ (2)
-      \newline
       $$
       (1)식을 고치면,
       $$
       (A_{11}-\lambda)v_1=-A_{12}v_2
-      \newline
       $$
       따라서
       $$
@@ -1281,7 +1364,6 @@
     plt.plot([1,2,3],[1,2,3])
     plt.title("Right")
     ```
-
   + Figure / axis objects
     Figure: 그래프 전체 "캔버스"
     Axes: 실제 데이터가 그려지는 "좌표 영역"
@@ -1308,11 +1390,32 @@
     plt.show()
     ```
   + 예제
+    - 삼각함수를 그려보자.
+      $$
+      y=\cos(\theta)
+      $$
+      $$
+      y=\sin(\theta)
+      $$
+      $$
+      y=\tan(\theta)
+      $$
+    - 반지름의 길이가 10인 원을 그려보자.
+      $$
+      x^2+y^2=10^2
+      $$
+    - 길이 변화에 따라서 나타나는 공칭 변형률과 진형병률 그래프 관계를 그리고 이를 비교해보자.
+      $$
+      \varepsilon=\ln(\epsilon+1)
+      $$
     - Stress vs. strain curve 그리기
-    - Tensile strength vs. ductility
-
+      다음 [압축파일](data/tensile_test_results.zip)을 풀어서, 파일 하나를
+      살펴보자 - 예를 들어 ```00_DD_WZ_01.csv```
+      위 데이터 파일을 활용해
+      1. 폭: 6.04 mm, 두께 2.99 mm 인걸 확인하고,
+      2. 힘과 변위 칼럼을 활용해서 응력과 변형률을 구하자.
+      3. 그 다음 응력과 변형률 곡선을 Figure로 그려보자.
 ## 수업 08-2
-
 # Week9 (Force vs. Disp curve 분석)
 - 목표
   + EBSD 데이터를 소개하고, 이를
