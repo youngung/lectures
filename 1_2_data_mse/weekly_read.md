@@ -1489,7 +1489,7 @@
 - 실제 미세조직 사진 활용 실습
     + 아래 사진을 [여기](data/dualphase_sem.png) 눌러서 다운 받자
 
-    <img src="data/dualphase_sem.png" alt="isolated" width="300"/>
+    ![imag](data/dualphase_sem.png)
 
     ```python
     from PIL import Image
@@ -1548,9 +1548,9 @@
   위에서 다뤘던 내용을 익혀 적용하고, 이를 바탕으로 이 시편에서의 ferrite와 martensite
   분율을 고르시오.
 
-    <img src="data/centercenter.png" alt="isolated" width="500"/>
-    <img src="data/edgecenter.png" alt="isolated" width="500"/>
-    <img src="data/edgeedge.png" alt="isolated" width="500"/>
+    ![imag](data/centercenter.png)
+    ![imag](data/edgecenter.png)
+    ![imag](data/edgeedge.png)
 
     * 위 SEM 사진을 다음 링크를 활용해 다운 받자:
 

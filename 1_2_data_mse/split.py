@@ -3,6 +3,10 @@ This python script is to generate several markdown files from 'weekly_read.md'
 to generate several 15 week-based markdown files along with its general
 information file 'data_mse.md'.
 """
+
+def change_link(link='data/dualphase_sem.png',prefix='/lecturenotes/data_mse/'):
+    return f'{prefix}{link}'
+
 def gen_head(title,permalink='/data_mse/'):
     head=f"""---
 layout: page
@@ -33,6 +37,24 @@ if __name__=='__main__':
     print(f'weeks: {len(blocks)}')
     for iweek, bl in enumerate(blocks):
         fn='tmp/weekly_read_week_%2.2i.md'%(iweek+1)
+
+
+
+        ## find image links and change the links
+        if True:
+            print(f'week: {iweek+1}')
+            lines=bl.split('\n')
+            for iline, line in enumerate(lines):
+                if '![' in line and ']' in line and '(' in line and ')' in line:
+                    print(f'Warning* probably a link. Modify link: {line}')
+                    link_ori=line.split('(')[-1].split(')')[0]
+                    link_new=change_link(link=link_ori)
+                    before=line.split('(')[0]
+                    lines[iline] = f'{before}({link_new})'
+            bl=''
+            for iline, line in enumerate(lines):
+                bl=f'{bl}{line}\n'
+
         with open(fn,'w') as fo:
             head=gen_head(title='DATA MSE week %2.2i'%(iweek+1),permalink='')
             fo.write(f'{head}\n')
