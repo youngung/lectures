@@ -6,7 +6,6 @@
  - 최신 데이터 기반의 재료공학 이해를 위한 기초 Python & JuPyter 활용 능력 기초
  - 기초 Python 이해를 바탕으로, 재료공학적 문제 해결에 응용
 # 주차별 내용
-
 # Week1 (개요, 설치, 변수 및 연산자) -
 ## 수업 01-1
  - 목표
@@ -547,7 +546,95 @@
         ~/repo/mse $ python ex02.py a b c 1 2 3
         ```
         실행 후 출력 결과 살펴보기
-      - Argparse 활용
+      - [Argparse](https://docs.python.org/ko/3.7/library/argparse.html) 활용
+      - [Argparse 자습서](https://docs.python.org/ko/3.7/howto/argparse.html#id1)
+      - 예시:
+        * 간단한 작동
+          아래를 myprogram.py 파일로 작성하여 저장하자.
+          ```python
+          import argparse
+          if __name__=='__main__':
+            parser = argparse.ArgumentParser()
+            parser.parse_args()
+          ```
+          그 다음 CLI에서 아래와 같이 명령문을 쳐보자.
+          ```sh
+          c:\users\user> python myprogram.py --help
+          usage: main.py [-h]
+
+          options:
+            -h, --help  show this help message and exit
+          ```
+        * positional argument
+          다음으로 myprogram.py을 열어서 다음과 같이 수정해봅시다.
+          ```python
+          import argparse
+          if __name__=='__main__':
+            parser = argparse.ArgumentParser()
+            parser.add_argument("x", type=int, help="the base")
+            args=parser.parse_args()
+
+            print(args.x**2)
+          ```
+
+          그런 다음 CLI에서 아래와 같이 명령문을 쳐보자.
+          ```sh
+          c:\users\user> python myprogram.py --help
+          usage: main.py [-h] x
+
+          positional arguments:
+            x           the base
+
+          options:
+            -h, --help  show this help message and exit
+          ```
+          명령어를 바꿔 다음과 같이 입력해보자.
+
+          ```sh
+          c:\users\user> python myprogram.py 3
+          given x: 3
+          x^2: 9
+          ```
+        * Additional options
+          다음으로 myprogram.py을 열어서 다음과 같이 수정해봅시다.
+          ```python
+          import argparse
+
+          def add(x,y):
+              return x+y
+
+          if __name__=='__main__':
+              parser=argparse.ArgumentParser()
+              parser.add_argument('x',type=int,help='the 1st base')
+              parser.add_argument('y',type=int,help='the 2nd base')
+              parser.add_argument('--myname',type=str,help='My Name')
+              args=parser.parse_args()
+
+              print('Myname:',args.myname)
+              print('given x:', args.x)
+              print('given y:', args.y)
+              multiplied=add(args.x,args.y)
+              print('x times y:', multiplie)
+          ```
+
+          CLI에서 아래를 실행하면
+          ```sh
+          c:\users\user> python main.py --help
+          usage: main.py [-h] [--myname MYNAME] x y
+
+          positional arguments:
+            x                the 1st base
+            y                the 2nd base
+
+          options:
+            -h, --help       show this help message and exit
+            --myname MYNAME  My Name
+          c:\users\user> python main.py 3 4 --myname mike
+          Myname: mike
+          given x: 3
+          given y: 4
+          x times y: 7
+          ```
 # Week4 (file IO / NumPy 01 - 기초 배열(array) 이해)
   - 목표
   - 파일을 활용해 데이터 input/output의 활용 가능하다.
@@ -1424,7 +1511,8 @@
       1. 폭: 6.04 mm, 두께 2.99 mm 인걸 확인하고,
       2. 힘과 변위 칼럼을 활용해서 응력과 변형률을 구하자.
       3. 그 다음 응력과 변형률 곡선을 Figure로 그려보자.
-## 수업 08-2
+## 수업 08-2 (np.meshgrid, grid, contouring)
+
 # Week9 (Force vs. Disp curve 분석, 최소 자승법)
 - 목표
   + force vs. displacement 파일로 불러올 수 있다.
@@ -1556,7 +1644,6 @@
 
   #    plt.plot(dmaster[:,1],dmaster[:,2])
   ```
-
 ## 수업 09-2 (노이즈가 있는 데이터로부터 최소자승법을 활용한 선형회귀)
 - 목표
   + 최소 자승법을 이해한다.
