@@ -3,6 +3,7 @@ This python script is to generate several markdown files from 'weekly_read.md'
 to generate several 15 week-based markdown files along with its general
 information file 'data_mse.md'.
 """
+import sys
 
 def change_link(link='data/dualphase_sem.png',prefix='/lecturenotes/data_mse/'):
     return f'{prefix}{link}'
@@ -11,7 +12,7 @@ def gen_head(title,permalink='/data_mse/'):
     head=f"""---
 layout: page
 title: {title}
-permalink:
+permalink: {permalink}
 ---"""
     return head
 if __name__=='__main__':
@@ -23,7 +24,7 @@ if __name__=='__main__':
     blocks=blocks[1:]
 
     # Create 'dat_mse.md'
-    head=gen_head(title='data MSE',permalink='/data_mse/')
+    head=gen_head(title='data MSE',permalink='')
     with open('tmp/data_mse.md','w') as fo:
         fo.write(f'{head}\n')
         fo.write(f'{lecture_info}\n')
@@ -37,8 +38,6 @@ if __name__=='__main__':
     print(f'weeks: {len(blocks)}')
     for iweek, bl in enumerate(blocks):
         fn='tmp/weekly_read_week_%2.2i.md'%(iweek+1)
-
-
 
         ## find image links and change the links
         if True:
@@ -56,7 +55,7 @@ if __name__=='__main__':
                 bl=f'{bl}{line}\n'
 
         with open(fn,'w') as fo:
-            head=gen_head(title='DATA MSE week %2.2i'%(iweek+1),permalink='')
+            head=gen_head(title='DATA MSE week %2.2i'%(iweek+1),permalink='')#,permalink='/lecturenotes/data_mse')
             fo.write(f'{head}\n')
             ## add link to latex to allow rendering equations with using latex.
             fo.write('<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>')

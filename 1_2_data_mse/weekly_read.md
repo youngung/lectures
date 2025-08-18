@@ -1418,7 +1418,7 @@
       \varepsilon=\ln(\epsilon+1)
       $$
     - Stress vs. strain curve 그리기
-      다음 [압축파일](data/tensile_test_results.zip)을 풀어서, 파일 하나를
+      다음 [압축파일](/lecturesnotes/data_mse/data/tensile_test_results.zip)을 풀어서, 파일 하나를
       살펴보자 - 예를 들어 ```00_DD_WZ_01.csv```
       위 데이터 파일을 활용해
       1. 폭: 6.04 mm, 두께 2.99 mm 인걸 확인하고,
