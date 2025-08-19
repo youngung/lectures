@@ -12,23 +12,41 @@
    + 수업 개요 및 진행, 규칙 설명
  - Orientation
    + 수업 개론
+   + 본 교과목은 '전공 선택'입니다.
    + 수업 내용 소개
    + 수업 진행 방식
- - 개념 설명
+      (설명, 교수자가 혼자 혹은 학생과 같이 실습 / 학생 혼자서 실습 / 스스로 예제 복습)
+ - 어려운 개념은 반복해서 예습을 풀어보며 '머리'와 '몸'으로 익히기.
  - 실습
-   + 반드시 스스로 실습하기 원칙
+   + 반드시 스스로 실습하기
+   + 영문 키보드 반드시 숙지 필요
+   + 각종 기호들 위치 익히기
+        `,',",!, @, #, $, %, ^, &, *, (, ),-, =, _, +, [, ],/,\\,<,>
    + 물에 몸을 담그지 않고 수영을 배울 수 없다.
    + 스스로 실습하지 않고서는 배울 수 없음.
      * 반드시 개인용 컴퓨터 필요 - 실습
-     * 없다면 학교에서 대여
-   + 친구/가족에게 빌리거나, 구매 필요함.
+     * 친구/가족에게 빌리세요.      * 없다면 학교에서 대여
    + 그외 기타 사정으로 수업을 듣고 싶으나 노트북 준비가 어렵다면
-          교수에게 상담 요청하시오.
+     교수에게 상담 요청하시오.
+   + 수업 시간 예제 반드시 스스로 해보기
+     * 스스로 공부할 때는 ChatGPT 도움을 받는 건 좋으나 시험에서는 활용 불가
+     * 왜 ChatGPT를 시험에 못 쓰게 하냐면, ChatGPT가 실수하는 것을 알아내고 고칠 수 있는 능력
+       을 갖추지 못하면...
+   + 교수자가 사용하는 tool: MacOS, MS VScode, terminal, Jupyter notebook ...
+     * Windows, MacOS, Linux 모두 활용가능
+     * 수업 중간에 인터넷을 통해 몇몇 패키지를 설치해야 할 수도 있으므로, 교내 와이파이 접속 가능해야 함.
  - 평가 방법
-   + 출석과 결석
+   + 출석과 결석 (출석 부를 때 없으면 결석, 수업 시작 30 분 이내 도착하면 이후 **지각**처리)
    + 중간/기말 평가
+     * 중요한 원리 이해 필요.
+     * 수업시간 다룬 예제들 중심으로 이해 필요.
+     * 고득점을 원한다면 변형된 예제들까지 이해하고 적용/응용 가능해야함.
  - 과제
    * 파이썬 설치 및 환경 설정 완성 (Python 3.12, JuPyter, VS code, pip)
+   * Youtube에서 간단한 Python tutorial 영상 찾아서 보고 따라해보기.
+   * 영문타자 익히기.
+   * 키보드 기호들의 위치 숙지 필요.
+   * 교내 인터넷 접속 필요.
 ## 수업 01-2
  - 오늘 목표
    * 파이썬 설치 및 환경 설정 완성 (Python 3.12, JuPyter, VS code, pip)
@@ -245,7 +263,6 @@
         ## average
         print(avg)
         ```
-
 ## 수업 02-2
  - ```if```, ```elif```, ```else``` 조건문 이해
     * 기본 구조
@@ -280,7 +297,6 @@
         else:
             print("Liquid state")
         ```
-
  - ```for``` 반복문
     * 기초 설명
       파이썬의 for 반복문은 **순서가 있는 데이터(시퀀스)**나 **반복 가능한 객체(iterable)**를 순차적으로 꺼내면서 코드를 실행하는 구문.
@@ -342,12 +358,61 @@
             for i in range(len(word)):
                 print(f"Index {i} → {word[i]}")
             ```
-
  - 실습 예시
       * 구구단 출력하기 (x단 입력하면 ... )
       * 학생 점수 데이터에서, 산술 평균, 최고점과 최저점 학생 이름 찾기 (조건문과 loop 활용)
       * 1부터 100사이의 정수합 구하기 (loop)
       * 주어진 List에서 최대값과 최소값 찾기 (조건문과 loop 활용)
+      * 2의 제곱근 구하기.
+        Algorithm
+        $$
+        x_{n+1}=x_n-\frac{(x_n)^2-2}{2x_n}
+        $$
+        ```python
+        x=11. ## initial guess
+        x=x-(x**2-2)/(2*x)
+        print(x)
+        x=x-(x**2-2)/(2*x)
+        print(x)
+        x=x-(x**2-2)/(2*x)
+        print(x)
+        x=x-(x**2-2)/(2*x)
+        print(x)
+        ```
+        ```for``` loop를 활용하면 더 근사하게 표현가능하겠다.
+        ```python
+        x=11. ## initial guess
+        for i in range(5):
+            x=x-(x**2-2)/(2*x)
+            print(x)
+        ```
+        * 3의 제곱근 구하기
+            ```python
+            x=1. ## initial guess (0이어서는 안된다. 이유는?)
+            for i in range(7):
+                x=x-(x**2-3)/(2*x)
+                print(x)
+            ```
+        * 4의 제곱근 구하기
+            ```python
+            x=1. ## initial guess (0이어서는 안된다. 이유는?)
+            for i in range(7):
+                x=x-(x**2-4)/(2*x)
+                print(x)
+            ```
+        * a의 제곱근 구하기
+            Algorithm
+            $$
+            x_{n+1}=x_n-\frac{(x_n)^2-a}{2x_n}
+            $$
+            ```python
+            a=30 # a에 다른 숫자를 넣어서 반복해보자.
+            x=1. ## initial guess (0이어서는 안된다. 이유는?)
+            for i in range(7):
+                x=x-(x**2-a)/(2*x)
+                print(x,x**2-a)
+            ```
+        * initial guess를 -1로 사용해서 되풀이 해보자.
       * 주양자수 $n$에 의해 결정되는 부 양자수 $l,m_l$ 출력하기.
         ```python
         # Calister 책의 표 2.1
@@ -364,6 +429,7 @@
                 no_electrons=no_electrons+2 # 각 state마다 up/down spin 전자, 따라서 2개씩.
         print('total number of electrons:',no_electrons)
         ```
+
 # Week3 (함수, class, module; **import** )
  - 목표
   + 함수와 클래스, 그리고 모듈의 이해
@@ -822,6 +888,12 @@
     $$
     |\boldsymbol a|=\sqrt{a_1^2+a_2^2+a_3^2}=\sqrt{\sum_i^3a_i^2}
     $$
+    주어진 벡터의 크기를 구하는 함수
+    ```python
+    def get_mag(v):
+        import math
+        return math.sqrt(v[0]**2+v[1]**2+v[2]**2)
+    ```
   - 벡터의 내적
     $$
     \boldsymbol a \cdot \boldsymbol b=a_1b_1+a_2b_2+a_3b_3=\sum_i^3a_ib_i
@@ -849,6 +921,30 @@
     for i in range(3):
       dotprod+=a[i]*b[i]
     ```
+  - 두 벡터가 주어졌을 때 사이 끼인 각을 구하는 함수
+    ```python
+    def get_mag(v):
+        import math
+        return math.sqrt(v[0]**2+v[1]**2+v[2]**2)
+
+    def get_ang(a,b):
+        import math
+        dotprod=0.
+        for i in range(3):
+            dotprod+=a[i]*b[i]
+        costh=dotprod/(get_mag(a)*get_mag(b))
+        print(f'costh:{costh}')
+        th=math.acos(costh)
+        return th
+
+    a=[1,0,0]
+    b=[0,1,0]
+    angle=get_ang(a,b)
+    print('ang in radian:', angle)
+    ## angle to degree?
+    print('ang in degree:', angle*180/3.141592)
+    ```
+
   - 행렬간의 dot product
 
     $$
@@ -867,8 +963,53 @@
     A = np.array([[1, 2], [3, 4]])
     B = np.array([[2, 0], [1, 3]])
 
-    print(A @ B)          # 행렬 곱
-    print(np.dot(A, B))   # 동일
+    C=[[0,0],[0,0]]
+    C[0][0]=A[0,0]*B[0,0]+A[0,1]*B[1,0]
+    C[0][1]=A[0,0]*B[0,1]+A[0,1]*B[1,1]
+    C[1][0]=A[1,0]*B[0,0]+A[1,1]*B[1,0]
+    C[1][1]=A[1,0]*B[0,1]+A[1,1]*B[1,1]
+    print('1:',C)
+
+    C=[[0,0],[0,0]]
+    i=0;j=0
+    C[i][j]=A[i,0]*B[0,j]+A[i,1]*B[1,j]
+    i=0;j=1
+    C[i][j]=A[i,0]*B[0,j]+A[i,1]*B[1,j]
+    i=1;j=0
+    C[i][j]=A[i,0]*B[0,j]+A[i,1]*B[1,j]
+    i=1;j=1
+    C[i][1]=A[i,0]*B[0,j]+A[i,1]*B[j,1]
+    print('2:',C)
+
+
+    C=[[0,0],[0,0]]
+    i=0;j=0
+    C[i][j]=A[i,0]*B[0,j]+A[i,1]*B[1,j] ## 네 statements가 동일함에 주목!
+    i=0;j=1
+    C[i][j]=A[i,0]*B[0,j]+A[i,1]*B[1,j] ## 각 line속에서 0,1로 바뀌는 index에 주목!
+    i=1;j=0
+    C[i][j]=A[i,0]*B[0,j]+A[i,1]*B[1,j] ## 그리고 각 인덱스가 반복됨에 주목하자.
+    i=1;j=1
+    C[i][1]=A[i,0]*B[0,j]+A[i,1]*B[j,1]
+    print('3:',C)
+
+    #따라서...
+    C=[[0,0],[0,0]]
+    for i in range(2):
+        for j in range(2):
+            C[i][j]=A[i,0]*B[0,j]+A[i,1]*B[1,j] ## 네 statements가 동일함에 주목!
+    print('4:',C)
+
+    #더 줄이면?
+    C=[[0,0],[0,0]]
+    for i in range(2):
+        for j in range(2):
+            for k in range(2):
+                C[i][j]=C[i][j]+A[i,k]*B[k,j]
+                #C[i][j]+=A[i,k]*B[k,j]      += 기호 사용
+    print('5:',C)
+    print('6:',A @ B)          # 행렬 곱
+    print('7:',np.dot(A, B))   # 동일
     ```
 
     두 2x2 행렬
@@ -882,7 +1023,7 @@
     $$
     와 같이 표현할 수 있다. 이를 **index**를 활용한 방식으로 아래와 같이 표기 가능하다.
     $$
-    \sum_k^3A_{ik}B_{kj}=C_{ij}, \text{ for } i=1,2,3.
+    \sum_k^3A_{ik}B_{kj}=C_{ij}, \text{ for } i=1,2,3 \text{ and } \   j=1,2,3
     $$
   - 외적
     $$
@@ -1846,18 +1987,297 @@
             a_lsq,b_lsq=np.linalg.inv(matrix)@c ## m^{-1} . c
            ```
 # Week10 (Matplotlib + Hall-petch equations, Creep data)
-## 수업 10-1
-## 수업 10-2
-# Week11 (무게비 원자비)
-## 수업 11-1 (무게비 원자비 변환)
-  - 무게비 원자비 변환
+## 수업 10-1 (Creep data)
+  - SN curve 데이터 파일 [SN_curve.txt](/lecturenotes/data_mse/data/SN_curve.txt)을 다운받아서
+    아래 예측 모형에 걸맞는 값들을 구해보자.
     $$
-    C_a=\frac{m_a}{m_a+m_b}\times 100 (wt\%)
+    N=B/\sigma^m
+    $$
+    위에서 각 기호는 아래와 같이 설명된다.
+    $$
+    N: \text{ number of cycles at failure }
+    $$
+    $$
+    \sigma: \text{Stress amplitude}
+    $$
+    $$
+    B, m : \text{material parameters}
+    $$
+
+
+  - Creep 데이터 파일 [creep.txt](/lecturenotes/data_mse/data/creep.txt)을 다운받아서
+    아래 예측 모형에 걸맞는 값들을 구해보자.
+    $$
+    \dot\varepsilon=K\sigma^n
     $$
 
     $$
-    C^\prime_a=\frac{m_a}{m_a+m_b}\times 100 (wt\%)
+    \dot\varepsilon : \text{ creep rate}
     $$
+
+    $$
+    \sigma : \text{ 응력}
+    $$
+
+    $$
+    K, n : \text{material parameters}
+    $$
+
+  - SciPy의 curve_fit 함수 활용하기
+    ```python
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.optimize import curve_fit
+
+    def power(edot,K,n):
+        return (edot/K)**(1/n)
+
+    dat=np.loadtxt('creep.txt',skiprows=1).T
+    x_data,y_data=dat
+
+    popt, pcov=curve_fit(power,x_data,y_data,p0=[1,1])
+    args=popt
+    power(x_data,*args)
+    plt.plot(x_data,y_data,'x')
+    plt.plot(x_data,power(x_data,*args))
+    plt.xscale('log')
+    plt.yscale('log')
+    ```
+  - 실습: 데이터를 활용해
+    $$
+    \dot\varepsilon<10^{-2}
+    $$
+    영역과
+    $$
+    \dot\varepsilon\geq 10^{-2}
+    $$
+    에 따로 ```curve_fit```을 적용시켜서
+    $$
+    K
+    $$
+    와
+    $$
+    n
+    $$
+    값을 구해보자.
+
+
+## 수업 10-2 (Contouring)
+  - 등고선 (contour) plot
+  - 예시
+    ```python
+    %matplotlib widget
+    import numpy as np
+    import matplotlib.pyplot as plt
+    ## number of grid lines
+    xn=20 #along horizontal
+    yn=20 #along vertical
+
+    ## x,y range
+    xlim=np.array([-2,2])
+    ylim=np.array([-6,6])
+    ## actual grids
+    xs=np.linspace(*xlim,xn) ## 4
+    ys=np.linspace(*ylim,yn) ## 11
+    yy,xx=np.meshgrid(ys,xs) ##  11 x 4
+    #xx,yy=np.meshgrid(xs,ys) ##  11 x 4
+
+    ## canvas (two 2D axes, one 3D axis)
+    fig=plt.figure(figsize=(13,3))
+    ax1=fig.add_subplot(131)
+    ax2=fig.add_subplot(132)
+    ax3=fig.add_subplot(133,projection='3d')
+
+    ## grid points
+    ax1.scatter(xx,yy,c='k')
+    mappable=ax2.contourf(xx,yy,z,cmap='jet')
+    plt.colorbar(mappable,ax=ax2)
+    if True:
+        #z=np.sqrt(xx**2+yy**2)
+        z=np.cos(xx)*yy+10
+        #z=np.log(np.abs(xx))*np.abs(yy)
+
+        ## 3D surface
+        ax3.plot_surface(xx,yy,z,cmap='jet',alpha=0.5)
+        ## colored 2D contour
+        ax3.contour(xx,yy,z,offset=0,cmap='jet')
+
+        for i in range(xn): ## x
+            for j in range(yn): ## y
+                ax1.text(xx[i,j],yy[i,j],f"z{i,j}={z[i,j]:.1f}",size=7,va='bottom',ha='center')
+
+    fig.tight_layout()
+    for i, ax in enumerate([ax1,ax2,ax3]):
+        ax.set_xlabel('X'); ax.set_ylabel('Y')
+        ax.set_xlim(xlim*1.3)
+        ax.set_ylim(ylim*1.3)
+    ax3.set_zlabel('Z')
+    ax3.set_zlim(0,)
+    ```
+  - 예시: Schmid law
+    $$
+    \tau=\sigma\cos\phi\cos\lambda
+    $$
+    이 때
+    $$
+    \cos\phi\cos\lambda
+    $$
+    를 Schmid factor라 부른다.
+
+    ```python
+    %matplotlib inline
+    import numpy as np
+    import matplotlib.pyplot as plt
+    nphi=200
+    nlam=100
+    phi=np.linspace(0,2*np.pi,nphi) ## x
+    lamb=np.linspace(0,2*np.pi,nlam) ## y
+
+    P,L=np.meshgrid(phi,lamb)
+    print(L.shape)
+    print(P.shape)
+
+    fig=plt.figure(figsize=(8,2))
+    ax1=fig.add_subplot(121)
+    ax2=fig.add_subplot(122)
+    sf=np.cos(L)*np.cos(P) # schmid factor calculation
+    map=ax1.contourf(np.rad2deg(P),np.rad2deg(L),sf) ## radian -> degree로 바꿔서
+    plt.colorbar(map,ax=ax1)
+    ax1.set_xlabel(r'$\phi ^\circ{}$')
+    ax1.set_ylabel(r'$\lambda ^\circ{}$')
+    ```
+  - 예시, FCC 단결정의 슬립계 면방향 지수
+    $$(h,k,l)$$
+    그리고 슬립 방향
+    $$[u,v,w]$$
+    이 주어지고, 일축 인장 방향이 벡터
+    $$
+    (x_1,x_2,x_3)
+    $$
+    로 주어졌을 때,
+    $$
+    \phi,\lambda
+    $$
+    를 계산하고, 이를 활용해 인장 응력 방향에 따라서 달라지는 Schmid factor 값을 살펴보시오.
+ - 인장 응력 방향을 polar coordinate로 표현해서 살펴봅시다.
+
+
+# Week11 (무게비 원자비)
+## 수업 11-1 (무게비 원자비 변환)
+  - 무게비 (weight fraction)
+    $$
+    w_a=\frac{W_a}{W_a+W_b}\times 100 (wt.\%)
+    $$
+    $$
+    W_a, W_b
+    $$
+    는 각각
+    $$
+    a
+    $$
+    원소와
+    $$
+    b
+    $$
+    원소의 질량 (혹은 무게).
+    마찬가지로, 부피비는 다음과 같이 표현이 가능하겠다.
+    $$
+    f_a=\frac{V_a}{V_a+V_b}\times 100 (vol.\%)
+    $$
+    $$
+    V_a, V_b
+    $$
+    는 각각
+    $$
+    a
+    $$
+    원소와
+    $$
+    b$$
+    원소의 부피
+  - 무게비 <-> 변환?
+    * 원소
+        $$
+        a
+        $$
+        의 무게는 밀도
+        $$
+        \rho_a
+        $$
+        와 부피
+        $$
+        V_a
+        $$
+        의 관계로 설명가능하다.
+        $$
+        \rho_a=\frac{W_a}{V_a}
+        $$
+        $$
+        w_a=\frac{W_a}{W_a+W_b}\times 100 =\frac{\rho_aV_a}{\rho_aV_a+\rho_bV_b}\times 100
+        $$
+        $$
+        \rightarrow w_a=\frac{1}{1+\frac{\rho_bV_b}{\rho_aV_a}}\times 100
+        $$
+        $$
+        \rightarrow 1+\frac{\rho_bV_b}{\rho_aV_a}=\frac{100}{w_a}
+        \rightarrow \frac{\rho_bV_b}{\rho_aV_a}=\frac{100}{w_a} -1
+        $$
+        $$
+        \therefore
+        \frac{V_b}{V_a}=(\frac{100}{w_a} -1)\frac{\rho_a}{\rho_b}
+        $$
+        마지막 관계식을 활용하여 부피비를 다시 표현하면
+        $$
+        f_a=\frac{V_a}{V_a+V_b}\times 100=\frac{1}{1+V_b/V_a}\times 100=\frac{1}{1+(\frac{100}{w_a} -1)\frac{\rho_a}{\rho_b}}\times 100
+        $$
+
+        따라서 각 원소의 밀도
+        $$
+        \rho_a,\rho_b
+        $$
+        그리고 무게비
+        $$
+        w_a [\%]
+        $$
+        를 알면 백분율 부피비를 구할 수 있다.
+
+        $$
+        a
+        $$
+        원소와
+        $$
+        b
+        $$
+        원소의 자리르 바꾸면
+        $$
+        f_b=\frac{1}{1+(\frac{100}{w_b} -1)\frac{\rho_b}{\rho_a}}\times 100
+        $$
+        ```python
+        def convert_a(wa,rhoa,rhob): ## get f_a
+            return 1/(1+(100/w_a-1)*(rhoa/rhob))*100
+        def convert_b(wb,rhoa,rhob): ## get f_a
+            return 1/(1+(100/w_b-1)*(rhob/rhoa))*100
+        ```
+  - 유용한 패키지 [periodic table](https://pypi.org/project/periodictable/),
+  [Github page](https://github.com/python-periodictable/periodictable)
+  [Documentation](https://periodictable.readthedocs.io/en/latest/)
+    ```bash
+    c:\users\user> pip install periodictable
+    ```
+  - 예제
+    한 철강 제품의 무게비가 다음과 같았다.
+    $$
+    Fe:C = 0.99: 0.01
+    $$
+
+    철의 부피비,
+    $$
+    v_{Fe}
+    $$
+    는 얼마인가?
+
+    ```python
+    ```
 ## 수업 11-2
 # Week12 (Matplotlib imaging, color-coding,  EBSD 데이터 분석)
 - 목표
@@ -1977,9 +2397,12 @@
 
 ## 수업 12-2
 - 수업 12-1 내용을 Argparse를 활용해 CLI 프로그램으로 작성해보자.
+- EBSD data 분석
 # Week13 (내삽과 외삽, 선형회귀)
 ## 수업 13-1
 ## 수업 13-2
+# Week14
+## 수업 14-1
  - 실습 예시
     * 금속 합금 조성 (Cu %) vs 전기 전도도
 ```python
@@ -1998,10 +2421,7 @@ plt.grid(True)
 plt.legend()
 plt.show()
 ```
-# Week14
-## 수업 14-1
 ## 수업 14-2
 # Week15 (기말고사)
 ## 수업 15-1
 ## 수업 15-2
-s
