@@ -187,18 +187,19 @@
       ```python
       import numpy as np
       def get_abs(v):
-        """
-        Function that calculates the magnitude of
-        given vector `v`
+          """
+          Function that calculates the magnitude of
+          given vector `v`
 
-        Arguments
-        ---------
-        v
-        Returns
-        -------
-        the magnitude of given vector v
-        """
-        return np.sqrt(v[0]**2+v[1]**2+v[2]**2)
+          Arguments
+          ---------
+          v
+
+          Returns
+          -------
+          the magnitude of given vector v
+          """
+          return np.sqrt(v[0]**2+v[1]**2+v[2]**2)
 
       ## two vectors
       a=np.array([1. ,2. ,3. ])
@@ -206,17 +207,168 @@
 
       ## absolute error between the two vectors
       err=get_abs(a-b)
+      print('1 error:',err)
       ## Relative error between the two vectors
       err=get_abs(a-b) #분자까지만,
       err=err/0.5*(get_abs(a)+get_abs(b)) # 분모로 나누면..
+      print('2 error:',err)
       ```
 
 ## 수업 02-2 (컴퓨터의 유한 정밀도 (floating point 개념))
+  + 유한정밀도
+    - 컴퓨터는 0과 1 (이진수, binary)만 저장할 수 있음.
+    - 무리수를 비롯한 실수(real number)는 무한히 많은 자리수 (3.141592...)를 가질 수
+      있으나, 메모리가 한정되어 정해진 비트 수까지만 저장가능함 (32비트, 62비트 등)
+    - 그로인해 수를 근사치로 저장하고 표현함; 유한한 정밀도를 가짐 (finite precision)
+  + 부동 소수점 (Float point) (cf. <-> 고정 소수점 (Fixed piont))
+    - 수를 저장하는 방식
+      부호(sign), 지수(exponent), 가수(mantisa)를 각각 이진법(0 혹은 1)로 표현함.
+    $$
+    값=(-1)^{sign}\times (1+mantisa)\times 2 ^{exponent-bias}
+    $$
+    - 예 10진수 5.75를 저장하기
+      * 5 = ```101```
+      * 0.75 = ``0.11``
+
+        0.75를 이진수로 만들기 위해서는 우선 2를 곱한다:
+        $$
+        0.75\times 2 = 1.5
+        $$
+        실수 ```1```을 제외한 나머지 ```0.5```에 다시 2를 곱한다.
+        $$
+        0.5\times 2 = 1.0
+        $$
+        실수 ```1```을 제외한 나머지가 0이 되어 사라질때까지 반복한다.
+        따라서  5.75 = `101.11` 가 된다. 이 값을 정규화와 부호 및 지수 처리를 한 후 저장.
+
+      * 정규화(normalization)
+
+        [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754)에 의하여
+        항상 수를
+        $$
+        1.\text{XXXX..} \times 2^n
+        $$
+        형태로 바꿔서 저장함.
+        $$
+        101.11=1.\green{0111}\times 2^{\red{2}}
+        $$
+        위와 같이 저장하면 두 부분의 수가 저장되어야 함.
+        + 가수(mantissa) = $\green{0111}0000$ (정해진 칸내에서 유효숫자 뒤는 0으로 채운다.)
+        + 지수(exponent) = $\red{2}$
+        + base가 ```2```인 이유는 이진법을 활용하기 때문에...
+      * 부호
+
+        ```5.75```는 양수 이므로, 부호는 양수로 저장 (부호비트 이진수 = ```0```)
+
+      * 지수
+
+        [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754)에 의하여 지수를
+        바이어스(bias) 방식으로 저장한다.
+        - [double precision](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)의 바이어스는 = $\blue{1023}$
+        - 실제 지수는 $\red{2}$.
+        - 저장되는 지수는 $\red{2}+\blue{1023}$=1025
+        - 따라서 바이어스 처리된 1025를 아래와 같이 2진수로 표현하면?
+        ```text
+        1025 ÷ 2 = 512 … 1
+        512 ÷ 2  = 256 … 0
+        256 ÷ 2  = 128 … 0
+        128 ÷ 2  = 64  … 0
+        64 ÷ 2   = 32  … 0
+        32 ÷ 2   = 16  … 0
+        16 ÷ 2   = 8   … 0
+        8 ÷ 2    = 4   … 0
+        4 ÷ 2    = 2   … 0
+        2 ÷ 2    = 1   … 0
+        1 ÷ 2    = 0   … 1
+        ```
+        ```10000000001```가 된다 (11비트, 즉 2진법으로 11자리)
+      * 가수 (Mantissa, fraction)
+
+        정규화된 수 $1.0111 \times 2^2$ 에서 앞의 1은 항상 생략(숨겨진 1),
+        따라서 저장되는 건 0111 뒤에 0으로 채운 52비트입니다.
+        mantissa = 0111000...0 (52비트)
+
+      * ```5.75```를 [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754)
+      방식으로 저장한다면..
+        - 부호 = ```0``` (1비트, 즉 0(+) 또는 1(-))
+        - 지수 = ```10000000000``` (11비트)
+        - 가수 = ```0111000000000000000000000000000000000000000000000000``` (54비트)
+  + 유한 정밀도 (finite precision)의 한계
+    * 가수부가 52비트로 제한되어 있음. 약 15~16자리 10진수까지만 정확히 표현 가능
+    * 그 이후 자리수는 '잘림'(truncation)
+    * 반올림 오차가(round-off error)가 발생
+    * 한계 사례
+      - 0.1 을 저장한다면...
+        0.1=```0.00011001100110011 ... ``` (무한 반복되어 정확히 저장 불가)
+      - 큰 수와 작은수를 더할 때
+        $$
+        10^{16}+1-10^{16}=?
+        $$
+        ```python
+        print(1e16+1-1e16)
+        ```
+      - 연산 순서에 따라 결과가 달라질 수 있음
+        ```python
+        # 예제 1: 큰 수 + 작은 수
+        a = 1e16   # 매우 큰 수
+        b = 1.0    # 작은 수
+        c = -1e16  # 큰 음수
+
+        res1 = (a + b) + c
+        res2 = a + (b + c)
+
+        print("(a + b) + c =", res1)
+        print("a + (b + c) =", res2)
+        ```
+
 # Week3
-## 수업 03-1 (근사치, 유효숫자, 반올림, 잘림(truncation))
-## 수업 03-2 (유효숫자 계산 풀기)
+  + 목표
+    - 방정식을 해석적(analytic)으로 그리고 수치적(numerical)으로 푸는 방법 비교
+## 수업 03-1 (방정식을 왜 수치적으로 풀어야 하나), 해석적 풀이 vs. 수치적 풀이, 2차 방정식 손계산
+  + 해석적 풀이가 가능한 경우
+    - 1차, 2차 방정식: 공식 존재
+      * $ax^2+bx+c=0$ 의 근의 공식
+      * $x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$
+  + 해석적 풀이가 불가능하거나 매우 복잡한 경우
+    - [5차이상의 다항식의 경우, 근의 공식 없음](https://ko.wikipedia.org/wiki/오차_방정식) (사칙연산이나, 거듭 제곱근 등, 손으로 계산 못한다.) 하지만 실근은 존재한다.
+    ```python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    def poly(x,*args):
+        """
+        polynomial function
+        """
+        n=len(args)-1
+        y=0.
+        print('n,i,arg')
+        for i, arg in enumerate(args):
+            print(n,i,arg)
+            y+=arg*(x**n)
+            n-=1
+        return y
+
+    xs=np.linspace(-1.3,1,100)
+    ys=poly(xs,-5,-2,5,3,2,1)
+    plt.plot(xs,ys,'-')
+    ```
+    - $x=\cos(x)$ 만족하는 $x$값 구하기.
+      근은 존재한다.
+      ```python
+      import numpy as np
+      import matplotlib.pyplot as plt
+      def func(x):
+          return np.cos(x)-x
+
+      xs=np.linspace(-10,10)
+      plt.plot(xs,func(xs),label=r'$y=\cos(x)$')
+      plt.axhline(c='k')
+      plt.legend()
+      ```
+
+## 수업 03-2
 # Week4
-## 수업 04-1 (방정식을 왜 수치적으로 풀어야 하나), 해석적 풀이 vs. 수치적 풀이, 2차 방정식 손계산 vs 근사 계산)
+## 수업 04-1 vs 근사 계산
 ## 수업 04-2 (2차 방정식 풀이 Python module 만들기)
 # Week5
 ## 수업 05-1 (이분법 - Bisection method, root 2 찾기)

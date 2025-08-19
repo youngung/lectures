@@ -564,6 +564,26 @@
         return sigma*math.cos(phi)*math.cos(lambda)
       ```
     + 위치 인자 (*args); tuple
+      ```python
+      def poly(x,*args):
+          """
+          polynomial function
+
+          y = a x^n + b x^(n-1) + c x^(n-2) ... z x^0
+
+          Arguments
+          ---------
+          x,*args
+          """
+          n=len(args)-1 # highest order
+          y=0.
+          print('n,i,arg')
+          for i, arg in enumerate(args):
+              # print(n,i,arg)
+              y+=arg*(x**n) #
+              n-=1          # in descending order
+          return y
+      ```
     + 키워드 인자 (keyword arguments; **kwargs); dictionary 활용
       ```python
       def get_sum(*args):
