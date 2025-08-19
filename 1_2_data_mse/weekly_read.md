@@ -12,40 +12,49 @@
  - Orientation
    + 수업 개론
    + 본 교과목은 '전공 선택'입니다.
-   + 수업 내용 소개
+ - 수업 내용 소개
    + 수업 진행 방식
       (설명, 교수자가 혼자 혹은 학생과 같이 실습 / 학생 혼자서 실습 / 스스로 예제 복습)
- - 어려운 개념은 반복해서 예습을 풀어보며 '머리'와 '몸'으로 익히기.
+   + 수업자료는 'markdown' 파일 형식으로 만들어져 있으며, 홈페이지에 게시함.
+   + 수업자료는 vscode로 작성되었으며, 따라서 vscode에서 가장 적절히 rendering 됩니다.
+   + 어려운 개념은 반복해서 예습을 풀어보며 **머리** 뿐만 아니라 **몸**(muscle memory)으로 익히기!
+   + 코딩은 자전거 타기, 수영하기, 축구하기, 등등과 비슷합니다. 반드시 **몸**으로 익혀야 합니다.
+      * 물에 몸을 담그지 않고 수영을 배울 수 없다.
+      * 자전거 없이 자전거 배우는 건 어렵듯이, 개인이 계속해서 쓸 컴퓨터가 없이 코딩을 배우는건 매우 어렵습니다.
  - 실습
-   + 반드시 스스로 실습하기
-   + 영문 키보드 반드시 숙지 필요
-   + 각종 기호들 위치 익히기
-        `,',",!, @, #, $, %, ^, &, *, (, ),-, =, _, +, [, ],/,\\,<,>
-   + 물에 몸을 담그지 않고 수영을 배울 수 없다.
+   + 반드시 스스로 실습하기 (예제를 일일이 다 쳐보고, 결과를 스스로 살펴봐야 합니다.)
+   + 영문 키보드 반드시 숙지 필요 (영타가 느리면 그만큼 학습이 느려집니다.)
+   + 각종 기호들 위치 익히기.
+      예)  `,',",!, @, #, $, %, ^, &, *, (, ),-, =, _, +, [, ],/,\\,<,>
    + 스스로 실습하지 않고서는 배울 수 없음.
      * 반드시 개인용 컴퓨터 필요 - 실습
-     * 친구/가족에게 빌리세요.      * 없다면 학교에서 대여
+     * 친구/가족에게 빌리세요. 없다면 학교에서 대여도 합니다 - [링크](https://chains.changwon.ac.kr/nonstop/lend/sub.php?group_code=e0000010&subgroup_code=es000043)
    + 그외 기타 사정으로 수업을 듣고 싶으나 노트북 준비가 어렵다면
      교수에게 상담 요청하시오.
    + 수업 시간 예제 반드시 스스로 해보기
-     * 스스로 공부할 때는 ChatGPT 도움을 받는 건 좋으나 시험에서는 활용 불가
+     * 스스로 공부할 때, 혹은 예제를 풀 때 [ChatGPT](chatgpt.com)에 도움을 받는 건
+       좋으나 시험에서는 활용 불가!
      * 왜 ChatGPT를 시험에 못 쓰게 하냐면, ChatGPT가 실수하는 것을 알아내고 고칠 수 있는 능력
        을 갖추지 못하면...
-   + 교수자가 사용하는 tool: MacOS, MS VScode, terminal, Jupyter notebook ...
-     * Windows, MacOS, Linux 모두 활용가능
-     * 수업 중간에 인터넷을 통해 몇몇 패키지를 설치해야 할 수도 있으므로, 교내 와이파이 접속 가능해야 함.
+   + 교수자가 사용하는 도구들: MacOS, MS VScode, 기본 terminal, Jupyter notebook ...
+     * 하지만, 실습은 Windows, MacOS, Linux .. 등 어디서든 가능합니다.
+     * [Google colab](https://colab.google)에서는 인터넷 연결만 되어 있다면 Jupyter notebook 실습 가능합니다.
+     * 수업 중간에 인터넷을 통해 몇몇 Python 패키지를 설치해야 할 수도 있으므로, 교내 와이파이 접속 가능해야 함.
  - 평가 방법
    + 출석과 결석 (출석 부를 때 없으면 결석, 수업 시작 30 분 이내 도착하면 이후 **지각**처리)
    + 중간/기말 평가
      * 중요한 원리 이해 필요.
      * 수업시간 다룬 예제들 중심으로 이해 필요.
      * 고득점을 원한다면 변형된 예제들까지 이해하고 적용/응용 가능해야함.
- - 과제
+ - 오늘의 과제
    * 파이썬 설치 및 환경 설정 완성 (Python 3.12, JuPyter, VS code, pip)
-   * Youtube에서 간단한 Python tutorial 영상 찾아서 보고 따라해보기.
-   * 영문타자 익히기.
+   * [YouTube](www.youtube.com)에서 간단한 Python tutorial 영상 찾아서 보고 따라해보기.
+   * 영문타자 익히기 - [여기](http://typing.works)서 연습해보세요.
    * 키보드 기호들의 위치 숙지 필요.
-   * 교내 인터넷 접속 필요.
+   * 교내 인터넷 접속 사전에 해보기.
+   * [Google colab](https://colab.google)에서 Notebook 만들어 실습해보기.
+   * [Google colab](https://colab.google)활용한다면 ipad나 갤럭시 탭으로도 실습 가능할 법 합니다.
+     하지만 여러 이유로 추천하지 않으며, 컴퓨터 활용을 추천합니다.
 ## 수업 01-2
  - 오늘 목표
    * 파이썬 설치 및 환경 설정 완성 (Python 3.12, JuPyter, VS code, pip)
@@ -430,7 +439,7 @@
         print('total number of electrons:',no_electrons)
         ```
 
-# Week3 (함수, class, module; **import** )
+# Week3 (함수, class, module, **import** )
  - 목표
   + 함수와 클래스, 그리고 모듈의 이해
   + 함수를 만들어, 모듈화 시키고 CLI에서 실행할 수 있다.
@@ -731,8 +740,43 @@
         print(line.strip())  # strip() → 줄바꿈 제거
       ```
     + 예시 (성적 처리)
-
       다음 [파일](/lecturenotes/data_mse/data/score_record_2017_MF_final_analysis.txt)을 읽고
+      ```txt
+      ID Score
+      --------------
+      xxxx5093  14.0
+      xxxx5298  53.0
+      xxxx3374  28.0
+      xxxx3374  41.0
+      xxxx5116  15.0
+      xxxx5122  16.0
+      xxxx5102  10.0
+      xxxx6114   6.0
+      xxxx5108  26.0
+      xxxx6135  22.0
+      xxxx4246  12.0
+      xxxx1513  11.0
+      xxxx5115  42.0
+      xxxx5140  41.0
+      xxxx5105  44.0
+      xxxx4254  67.0
+      xxxx3341  47.0
+      xxxx5100  48.0
+      xxxx4264  55.0
+      xxxx5127  53.0
+      xxxx4235  44.0
+      xxxx4249  67.0
+      xxxx4257  41.0
+      xxxx5146  53.0
+      xxxx4273  62.0
+      xxxx4275  64.0
+      xxxx4258  62.0
+      xxxx4282  58.0
+      xxxx4236  77.0
+      xxxx4269  38.0
+      xxxx4445  50.0
+      xxxx5142  53.0
+      ```
       평균, 표준 편차, 그리고 최고점과 최저점을 받은 학생 번호를 찾는 파이썬 프로그램을
       만들어 보자.
 
@@ -902,7 +946,7 @@
     $$
     \boldsymbol a \cdot \boldsymbol b=|\boldsymbol a||\boldsymbol b|\cos\theta
     $$
-    ```List```, ```len```, ```range```, ~~```enumerate```~~를 활용하여
+    ```list```, ```len```, ```range```, ~~enumerate~~를 활용하여
     아래와 같이 표현 가능
     ```python
     a=[1,2,3]
@@ -918,7 +962,7 @@
     a=np.array([1,2,3])
     b=np.array([4,5,6])
     dotprod=0.
-    for i in range(3):
+    for i in range(len(a)):
       dotprod+=a[i]*b[i]
     ```
   - 두 벡터가 주어졌을 때 사이 끼인 각을 구하는 함수
@@ -930,7 +974,7 @@
     def get_ang(a,b):
         import math
         dotprod=0.
-        for i in range(3):
+        for i in range(len(a)):
             dotprod+=a[i]*b[i]
         costh=dotprod/(get_mag(a)*get_mag(b))
         print(f'costh:{costh}')
