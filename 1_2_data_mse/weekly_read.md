@@ -1,5 +1,4 @@
 **데이터 재료과학**
-
 국립창원대학교 재료금속공학과 [정영웅](mailto:yjeong@changwon.ac.kr)
 
 # 수업 목표
@@ -86,20 +85,21 @@
 
         # 3. 포함 여부
         text = "Fe2O3"
-        print("F" in text)      # True  ('a'가 문자열에 포함됨)
-        print("O" not in text)  # True  ('z'가 문자열에 없음)
+        print("F" in text)      # True  ('F'가 문자열에 포함됨)
+        print("O" not in text)  # True  ('O'가 문자열에 없음)
 
         numbers = [1, 2, 3]
         print(2 in numbers)     # True  (리스트에 2가 포함됨)
         print(5 not in numbers) # True  (리스트에 5가 없음)
-       ```
+        ```
  - 실습 예시
-   * pip 활용하여 NumPy 설치하고, package directory 찾기.
+   * pip 활용하여 NumPy, scipy, matplotlib, jupyter, 등등 설치하고, package directory 찾기.
    * 인치(inch_leng) 길이를 센치미터(cmeter_leng)로 바꿔서 계산. 센치 미터를 인치로
      계산해보기.
      + 25 cm는 몇 inch인가?
      + 170 cm는 몇 inch인가?
      + 15 inch에다가 50 cm를 더하면 총 길이가 얼마인가?
+   * 각도 degree 를 radian으로 바꾸기.
    * 섭씨(cent_deg)를 화씨(fahr_deg)로, 그리고 화씨(fahr_deg)를 섭씨(cent_deg)로 계산해보기.
         ```python
         ## 예시
