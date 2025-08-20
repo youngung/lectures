@@ -321,6 +321,8 @@
         print("a + (b + c) =", res2)
         ```
 
+    + ex: 0.80
+
 # Week3
   + 목표
     - 방정식을 해석적(analytic)으로 그리고 수치적(numerical)으로 푸는 방법 비교
@@ -353,7 +355,7 @@
     plt.plot(xs,ys,'-')
     ```
     - $x=\cos(x)$ 만족하는 $x$값 구하기.
-      근은 존재한다.
+      근은 분명 존재한다.
       ```python
       import numpy as np
       import matplotlib.pyplot as plt
@@ -366,15 +368,770 @@
       plt.legend()
       ```
 
-## 수업 03-2
-# Week4
-## 수업 04-1 vs 근사 계산
+   + 이분법(bisection method)
+      * 원리:
+        - $f(x)=0$가 연속일 때, 두 점 $a,b$에서 함수값의 부호가 다르면, 그 사이에 반드시 해가 있다. (중간값 정리, Intermediate Value Theorem)
+        - 즉, [a, b] 구간에서 근이 있음을 알면 구간을 절반으로 줄여가며 해를 찾는 방법
+      * 알고리듬:
+        - 시작 구간 $[a,b]$ 선택:
+          $$f(a)×f(b)<0$$
+          위가 반드시 만족되어야 함 (근이 반드시 존재)
+        - 중점 계산
+          $$c=\frac{a+b}{2}$$
+        - f(c)의 부호 확인
+          + $$f(a)\times f(c)<0$$
+            근이 $[a,c]$ 안에 존재
+          + $$f(c)\times f(b)<0$$
+            근이 $[c,b]$ 안에 존재
+        - 새로운 구간을 $[a,c]$ 또는 $[c,b]$로 좁힘
+        - 원하는 허용 구간 내 오차가 나올 때 까지 반복.
+          $$E^a \leq Tol.
+      * 예제
+        방정식 $x^2=2$를 풀어보자.
+        - 구간선택: $[a,b]=[1,2]$
+          + $f(1)=-1,f(2)=2$
+          + 부호가 다르므로, 선택된 구간안에 해 존재.
+        - 중점 $c=\frac{a+b}{2}=1.5$
+          + $f(1.5)=0.25>0$
+          + 따라서 근은 $[1,1.5]$ 범위 내 존재
+        - 다시 중점 $c=\frac{a+b}{2}=1.25$
+          + $f(125)=-0.4375<0$
+          + 따라서 근은 $[1.25,1.5]$사이에 존재
+        - 중점 빛 범위 설정을 반복하여 오차 좁힘.
+        ```python
+        def f(x): ## f(x)=x^2-2 함수
+            return x**2 - 2
+        a=1
+        b=2
+        tol=1e-10
+        error=tol*2
+        if f(a) * f(b) > 0:
+            print("root not in [a, b]")
+        k=0
+        while error>tol: #(b - a) / 2 > tol:
+            c = (a + b) / 2 # center
+            if f(a) * f(c) < 0: # opposite sign
+                b = c # update b
+            else:
+                a = c # or update a
+            error=(b-a)/2.
+            k=k+1
+        print('total iteration:',k)
+        ```
+        - 내 컴퓨터에서는 33번 반복해야 $10^{-10}$ 허용오차 범위내의 근을 구할 수 있었다.
+
+        - 아래 예시를 통해 upper limit (파란색), lower limit (빨간색)이 반복 횟수에 따라 변하는 과정을 살펴보자.
+        ```python
+        def f(x): ## f(x)=x^2-2 함수
+            return x**2 - 2
+        a=1
+        b=2
+        tol=1e-2
+        error=tol*2
+        if f(a) * f(b) > 0:
+            print("root not in [a, b]")
+        k=0
+        while error>tol: #(b - a) / 2 > tol:
+            plt.plot(k,a,'ro')
+            plt.plot(k,b,'bo')
+            c = (a + b) / 2 # center
+            plt.plot(k,c,'g+')
+            if f(a) * f(c) < 0: # opposite sign
+                b = c # update b
+            else:
+                a = c # or update a
+            error=(b-a)/2.
+            k=k+1
+
+        print('total iteration:',k,'root:',c)
+        print('a,b:',a,b)
+        plt.plot(np.nan,'ro',label='a')
+        plt.plot(np.nan,'bo',label='b')
+        plt.plot(np.nan,'g+',label='center')
+        plt.xlabel('iteration')
+        plt.ylabel('Range')
+        plt.legend()
+        ```
+
+## 수업 03-2 (Newton-Raphson 1)
+  + Bisection method, 원리가 쉽고 그리고 근을 찾긴 하지만, 때로는 너무 많은 반복 계산을
+  필요로 한다. 더욱 빠르고 효율적인 방법이 없을까?
+  + 예제
+    방정식 $x^2=2$를 풀어보자.
+    - 해석적 해: $x=\pm\sqrt{2}$
+    - 수치적 해?
+      알고리듬
+      $$
+      x_{n+1}=x_n-\frac{x_n^2-2}{2x_n}
+      $$
+
+      오차가 항상 있으므로, 허용가능한 오차(tolerance)를 설정해야 하겠다. 절대 오차를
+      아래와 같이 정의하고, 허용가능한 오차를 $10^{-10}$으로 설정하자.
+      $$
+      E^a = |x_{n+1}^2-2|\leq 10^{-10}
+      $$
+
+      이 알고리듬은 처음 추측값($x_0$)이 필요하다.
+      이를 $x_0=+1$로 설정하고 알고리듬을 적용해보자.
+
+      * n=0
+
+        $x_0=+1$
+
+      * n=1
+
+        $x_1=x_0-\frac{x_0^2-2}{2x_0}=1-\frac{1^2-2}{2}=1+0.5=1.5$
+
+        $E^a=|1.5^2-2|=0.25 \ge10^{-10} \therefore \text{not accurate enough}$
+
+      * n=2
+
+        $x_2=x_1-\frac{x_1^2-2}{2x_1}=1.5-\frac{1.5^2-2}{3}=1.4166666...$
+
+        $E^a=|1.4166...^2-2|=0.006944...\times 10^{-6}\ge10^{-10} \therefore \text{not accurate enough}$
+
+      * n=3
+
+        $x_3=x_2-\frac{x_2^2-2}{2x_2}=1.41421568 ... $
+
+        $E^a=6.007..\times10^{-6}\ge10^{-10} \therefore \text{not accurate enough}$
+      * n=4
+
+        $x_4=x_3-\frac{x_3^2-2}{2x_3}=1.41421356237... $
+
+        $E^a=4.51\times10^{-12}\lt10^{-10} \therefore \text{accurate enough!}$
+
+      ```python
+      fig=plt.figure()
+      ax1=fig.add_subplot(121)
+      ax2=fig.add_subplot(122)
+
+      x=1 ## initial guess
+      ax1.plot(0,x,'o',label='initial guess')
+      tol=1e-10
+      err=tol*2
+      k=0
+      while(err>tol and k< 10): ## k counts the number of iteration.
+          x=x-(x**2-2)/(2*x)
+          err=abs(x**2-2)
+          print(k+1,x,err)
+          print(err<=tol)
+          k=k+1
+          ## see the trend.
+          ax1.plot(k,x,'+',label=r'$x_%i$'%k)
+          ax2.plot(k,err,'o')
+
+      #ax2.set_yscale('log')
+      ax1.legend()
+      ```
+
+      * Repeat the above with changing the initial guess $x_0=-1$.
+      * $y=x^2-2$ 그래프를 실제로 그리고, 반복할 때 마다 어떻게 값이 변하고 있는지 살펴보자.
+
+  + 예제
+    방정식 $x^2=3$를 풀어보자.
+    + 주어진 알고리듬은 아래와 같다.
+      $$
+      x_{n+1}=x_n-\frac{x_n^2-3}{2x_n}
+      $$
+
+  + 예제
+    방정식 $x^4=2$를 풀어보자.
+    + 주어진 알고리듬은 아래와 같다.
+      $$
+      x_{n+1}=x_n-\frac{x_n^4-2}{4x_n^3}
+      $$
+  + 예제
+    방정식 $\ln(x)=1$를 풀어보자.
+    + 주어진 알고리듬은 아래와 같다.
+      $$
+      x_{n+1}=x_n-\frac{\ln(x_n)-1}{1/x_n}
+      $$
+  + 예제
+    방정식 $\cos(x)=0.3$를 풀어보자.
+    + 주어진 알고리듬은 아래와 같다.
+      $$
+      x_{n+1}=x_n-\frac{\cos(x_n)-0.3}{-\sin(x_n)}
+      $$
+  + 물음
+    위 예제에서 보이는 특정 규칙을 찾아보자.
+    $$
+    f(x)=0
+    $$
+    이라면
+  + 물음 초기값을 바꿔보고 그 영향을 살펴보자.
+
+# Week4 (Newton Raphson 2)
+## 수업 04-1 Taylor series와 Newton-Raphson 법
+  + 개념
+    - $f(x)=0$ 형태의 함수의 답을 구하고 싶을 때 사용할 수 있다.
+    - 예: $x^2=2$의 해를 구하기 위해서는
+      $f(x)=x^2-2=0$의 해를 구하면 되겠다.
+    - Bisection method는 항상 해를 구할 수 있지만, Newton Raphson은
+    가끔 해를 못구할 때도 (해를 구하는데 실패할 수) 있다.
+    - 하지만 Bisection method에 비해 훨씬 빠르게 해를 찾을 수 있다.
+    - '접선'을 활용해 해를 빠르게 찾아간다.
+    - 미지수가 둘 이상은 경우에도 활용가능하다 (Advanced)
+       * $f(x,y)=0$ 혹은 $\boldsymbol f(\boldsymbol v)=0$ 에도 활용 가능.
+  + [테일러 급수(Taylor series)](https://ko.wikipedia.org/wiki/테일러_급수) and [Newton Raphson](https://ko.wikipedia.org/wiki/뉴턴_방법)
+    - 함수 $f(x)$의 테일러 급수에 의하면
+      $$
+      f(x)=\sum_{n=0}^{\infty}\frac{f^{(n)}(a)}{n!}(x-a)^n=f(a)+f^\prime(a)(x-a)+\frac{1}{2}f^{\prime\prime}(a)(x-a)^2+\frac{1}{6}f^{\prime\prime\prime}(a)(x-a)^3 + ...
+      $$
+    - Example of $f(x)=x^2$ 의 경우?
+      $$
+      f(x)=x^2
+      $$
+      $$
+      f^\prime(x)=2x
+      $$
+      $$
+      f^{\prime\prime}(x)=2
+      $$
+      $$
+      f^{\prime\prime\prime}(x)=0.
+      $$
+
+      따라서, 이어서 나오는 고차 항의 도함수는 0이 되며 기여하는 바가 없게 된다.
+      다시 테일러 급수의 정의를 따라,
+      * $a=0$일 때의 경우(Maclaurin series)를 살펴보면
+        $$
+        f(x)=f(0)+f^\prime(0)x+\frac{1}{2}f^{\prime\prime}(0)x^2
+        =0+0\times x+1/2\times 2\times x^2=x^2
+        $$
+      * $a=1$일 때의 경우에는?
+        $$
+        f(x)=f(1)+f^\prime(1)(x-1)+\frac{1}{2}f^{\prime\prime}(1)(x-1)^2
+        =1+2(x-1)+(x-1)^2
+        $$
+        $$
+        =1+2x-2+x^2-2x+1=x^2
+        $$
+     * Newton-Raphson 식 도출 (1st order)
+        $$
+        f(x)=0
+        $$
+        을 풀이하는 문제가 있다 가정하자. 이때 이를 위 의 $a$값을 $x_n$라 놓고 풀면
+        $$
+        f(x)=f(x_n)+f^\prime(x_n)(x-x_n)+\frac{1}{2}f^{\prime\prime}(x_n)(x-x_n)^2+ ...
+        $$
+        여기서 $n=1$까지 항만 고려한다면..
+        $$
+        f(x)\approx f(x_n)+f^\prime(x_n)(x-x_n)
+        $$
+        우리가 풀이하고자 하는 조건에 의하면 $f(x)=0$ 이므로
+        $$
+        0\approx f(x_n)+f^\prime(x_n)(x-x_n)
+        $$
+        따라서 $x$에 대해 풀이하면
+        $$
+        -\frac{f(x_n)}{f^\prime(x_n)}\approx x-x_n
+        $$
+        아래가 도출된다.
+        $$
+        \rightarrow x\approx x_n-\frac{f(x_n)}{f^\prime(x_n)}
+        $$
+
+        이 때 근사된 $x$을 다음번 추측값 $x_{n+1}$이라 하면 Newton-Raphson에 활용되는 반복식이 얻어진다.
+
+     * 2nd order Newton-Raphson 식
+        + Taylor 공식에서 2차 오더까지 사용하면 어떠한 Newton-Raphson식이 도출되나?
+        + 도출
+            $$
+            f(x)\approx f(x_n)+f^\prime(x_n)(x-x_n)+\frac{1}{2}f^{\prime\prime}(x_n)(x-x_n)^2
+            $$
+            급수의 중심을 바꾸기 위해 $h$값을 아래와 같이 도입하자
+            $$
+            h=x-x_n
+            $$
+            그러면 2차항까지의 테일러 급수가 아래와 같이 표현된다.
+            $$
+            f(x_n+h)\approx f(x_n)+f^\prime(x_n)h+\frac{1}{2}f^{\prime\prime}(x_n)h^2
+            $$
+            그 다음 좌항이 0이 되면
+            $$
+            0\approx f(x_n)+f^\prime(x_n)h+\frac{1}{2}f^{\prime\prime}(x_n)h^2
+            $$
+            $h$에 대한 2차 방정식이므로, 근의 공식을 사용하면
+            $$
+            h=\frac{-f^\prime(x_n)\pm\sqrt{[f^\prime(x_n)]^2-2f(x_n)f^{\prime\prime}(x_n)}}{f^{\prime\prime}(x_n)}
+            $$
+            위 계산으로 구해진 $h$를 활용해서
+            $$
+            x_{n+1}=x_{n}+h
+            $$
+        + 주의
+            근의 공식에 따른 두 $h$값 중에 무엇을 선택해야 하나? 대부분의 경우 두 값을 비교하여 더욱 작은 $h$값을 활용한다.
+
+  + 예제
+    - 방정식 $x^2+x=10$을 풀어보자.
+    - 우선 $f(x)=0$ 형태로 바꿔 표현하면,
+      $$
+      f(x)=x^2+x-10=0
+      $$
+      혹은
+      $$
+      f(x)=-x^2-x+10=0
+      $$
+      이 된다. 사실 어느 쪽을 고르나 동일한 알고리듬이 적용 가능하다. 전자의 경우를 선택하고
+      파이썬으로 함수$f(x)$를 표현해보자.
+      ```python
+      def func(x):
+        return x**2+x-10
+      ```
+      풀이에 의하면 함수의 도함수 $f^\prime(x)$도 필요하다. 따라서,
+      $$
+      f^\prime(x)=\frac{\partial f(x)}{\partial x}=2x+1
+      $$
+      파이썬으로 표현하자면
+      ```python
+      def fprime(x):
+        return 2*x+1
+      ```
+      이를 활요해 아래 알고리듬에 대입하면
+      $$
+      x_{n+1}\leftarrow x_n-\frac{f(x_n)}{f^\prime(x_n)}
+      $$
+      ```python
+      x=1 # initial guess
+      x=x-func(x)/fprime(x)
+      ```
+      여기에 tolerance를 추가한다면
+      ```python
+      x=1 # initial guess
+      tol=1e-10
+      err=abs(func(x))
+      while err>tol:
+          x=x-func(x)/fprime(x)
+          err=abs(func(x))
+      ```
+      + 초기값을 바꿔보고 그 영향을 살펴보자.
+
+  + **고급 예제**:  위 경우를 아래와 같이 2nd order Taylor expansion을 활용해 작성해보자.
+    $$
+    h=\frac{-f^\prime(x_n)\pm\sqrt{[f^\prime(x_n)]^2-2f(x_n)f^{\prime\prime}(x_n)}}{f^{\prime\prime}(x_n)}
+    $$
+    위 계산으로 구해진 $h$를 활용해서
+    $$
+    x_{n+1}=x_{n}+h
+    $$
+  + 아래는 Halley's method으로 알려진 방법이다.
+    $$
+    x_{n+1}=x_n-\frac{2f(x_n)f^\prime(x_n)}{2[f^\prime(x_n)]^2-f(x_n)f^{\prime\prime}(x_n)}
+    $$
+    이를 활용해
+    $$
+    f(x)=\cos(x)e^{3x}-3=0
+    $$
+    을 만족하는 $x$값을 구하시오.
+
+  + 1st and 2nd order Newton-Raphson과 Halley's method 비교 예제
+    ```python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    def f(x):
+        return np.cos(x)*np.exp(3*x)-3
+    def fp(x):
+        return np.cos(x)*np.exp(3*x)*3-np.sin(x)*np.exp(3*x)
+    def fpp(x):
+        return -np.sin(x)*np.exp(3*x)*3+np.cos(x)*np.exp(3*x)*9
+    def h(x): # 2nd order NR
+        F=f(x)
+        p=fp(x)
+        pp=fpp(x)
+
+        det=p**2-2*F*pp
+        det=np.sqrt(det)
+        h1=-p+det
+        h1=h1/pp
+
+        h2=-p-det
+        h2=h2/pp
+        if abs(h1)<abs(h2): return h1
+        else: return h2
+
+    def Halley(x): ## Halley's term
+        F=f(x)
+        p=fp(x)
+        pp=fpp(x)
+        return 2*F*p/(2*p**2-F*pp)
+
+    xs=np.linspace(-2.5,1)
+    ys=func(xs)
+
+    fig=plt.figure(figsize=(7,3))
+    ax1=fig.add_subplot(121)
+    ax2=fig.add_subplot(122)
+    ax1.plot(xs,ys)
+
+    xinit=-0.1
+    tol=1e-10
+    ## Newton Raphson
+    x=xinit
+    err=tol*2
+    i=0
+    while err>tol:
+        ax1.plot(x,f(x),'ko',mfc='None')
+        ax2.plot(i,f(x),'ko')
+        x+=-f(x)/fp(x)
+        err=abs(f(x))
+        i+=1
+
+    ## 2nd order
+    x=xinit
+    err=tol*2
+    i=0
+    while err>tol:
+        ax1.plot(x,f(x),'r+')
+        ax2.plot(i,f(x),'r+')
+        x+=+h(x) # here it is + sign.
+        err=abs(f(x))
+        i+=1
+
+    ## Halley's method
+    ## 2nd order
+    x=xinit
+    err=tol*2
+    i=0
+    while err>tol:
+        print(i,x)
+        ax1.plot(x,f(x),'bx')
+        ax2.plot(i,f(x),'bx')
+        x-=Halley(x) # note the minus sign here!
+        err=abs(f(x))
+        i+=1
+    ```
+
 ## 수업 04-2 (2차 방정식 풀이 Python module 만들기)
-# Week5
-## 수업 05-1 (이분법 - Bisection method, root 2 찾기)
-## 수업 05-2 (Newton raphson method)
-# Week6
-## 수업 06-1 고정점 반복법 (fixed-point iteration)
+  + **고급 예제**:  임의의 2차 함수의 해를 찾는 script를 작성해보자.
+  + **고급 예제**:  CLI 환경에서 $a,b,c$ 를 줬을 때, $ax^2+bx+c=0$의 해를 찾는 모듈을 만들어보자.
+# Week5 (연립 방정식)
+## 수업 05-1 (연립 방정식 소개)
+  + 2원 연립 방정식
+    $$
+    \bigg(
+    \begin{matrix}
+    2x+y=5  \ \ \text{eq. (1)}\\
+    x-y=-1   \ \ \text{eq. (2)}
+    \end{matrix}
+    $$
+    미지수가 $x,y$ 두 개 (2원), 식도 2개!
+    - 대입법 (손으로 풀이)
+      * 식 (2)를 바꿔서
+        $$y=x+1$$
+        이라 정리되고, 이를 다시 식 (1)에 대입하면,
+      * 식 (1)이
+        $$2x+(x+1)=5$$
+        로 바뀌고
+        $$3x=4\rightarrow x=4/3$$
+        따라서
+        $$y=4/3+1=7/3$$
+      * 주어진 연립방정식을 만족하는 $(x,y)$ 페어 완성
+        $$
+        x=4/3, y=7/3
+        $$
+    - 가감법 (덧셈이나 뺄셈을 활용해 손으로 풀이)
+      * 식 (1)+식(2) 혹은 식 (1) - 식(2) 등을 활용
+      * 식 (1)과 식(2)를 더하면
+        $$
+        3x=4
+        $$
+        따라서 $x$와 $y$를 이어 구할 수 있다.
+
+  + 기하학적 의미
+    2원 1차 연립 방정식에서 각 방정식은 각기 다른 '직선'을 의미
+    $$
+    2x+y=5 \rightarrow y=-2x+5
+    $$
+    $$
+    x-y=-1 \rightarrow y=x+1
+    $$
+    두 직선의 교점 $(x,y)=(3/4,7/3)$
+    ```python
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    ## the two lines
+    def y1(x): return 5-2*x
+    def y2(x): return x+1
+
+    xs=np.linspace(-2,4) ## -10~10 범위 내의 선 그리기
+    plt.plot(xs,y1(xs),'r-',label='Line 1')
+    plt.plot(xs,y2(xs),'b-',label='Line 2')
+
+    xy=(4/3,7/3) # actual solution
+    plt.plot(*xy,marker='+',mfc='None',mec='k',ms=10)
+
+    # deco
+    plt.legend()
+    ```
+
+  + 3원 연립 방정식
+    $$
+    \bigg(
+    \begin{matrix}
+    2x+y+z=5  \ \ \text{eq. (1)}\\
+    x-y-z=-1   \ \ \text{eq. (2)}\\
+    x+5y+2z=0 \ \ \text{eq. (3)}
+    \end{matrix}
+    $$
+    미지수가 $x,y$ 두 개 (2원), 식도 2개!
+
+  - 기하학적 의미? 서로 다른 세 면이 만나는 점.
+    ```python
+    import matplotlib.pyplot as plt
+    import numpy as np
+    %matplotlib widget
+
+    def z1(x,y):
+        return 5-2*x-y
+    def z2(x,y):
+        return x-y+1
+    def z3(x,y):
+        return (-x-5*y)/2.
+
+    nres=10
+    x=np.linspace(-10,10,nres)
+    y=np.linspace(-10,10,nres)
+    xx,yy=np.meshgrid(x,y)
+    zz1=z1(xx,yy)
+    zz2=z2(xx,yy)
+    zz3=z3(xx,yy)
+
+    fig=plt.figure()
+    ax1=fig.add_subplot(projection='3d')
+    kws=dict(alpha=0.5)
+    ax1.plot_surface(xx,yy,zz1,color='r',**kws)
+    ax1.plot_surface(xx,yy,zz2,color='g',**kws)
+    ax1.plot_surface(xx,yy,zz3,color='b',**kws)
+
+    ## actual point
+    xyz=1.3333333,-2, 4.3333333
+    ax1.scatter(*xyz,color='k',marker='o')
+    ```
+## 수업 05-2 (행렬을 활용한 풀이)
+  + 2원 연립 방정식 풀이
+    - 우선 풀이를 위해서는 연립 방정식을 행렬의 형태로 바꿔야 한다.
+        $$
+        \bigg(
+        \begin{matrix}
+        2x+y=5  \ \ \text{eq. (1)}\\
+        x-y=-1   \ \ \text{eq. (2)}
+        \end{matrix}
+        $$
+        을 다음의 행렬 형태로 바꾸자.
+        $$
+        \begin{bmatrix}
+        2& 1\\
+        1&-1\\
+        \end{bmatrix}
+        \begin{bmatrix}
+        x\\
+        y
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+        5\\
+        -1
+        \end{bmatrix}
+        $$
+        위처럼 연립 방정식을 행렬의 형태로 바꿔서 풀이할 수 있다. 따라서 연립 방정식을
+        행렬 형태로 바꾸는 연습이 필요.
+    - 예시
+      * 아래 연립 방정식을 행렬의 형태로 바꿔보세요.
+        $$
+        \bigg(
+        \begin{matrix}
+        x-5=y  \\
+        y-3x+3=0
+        \end{matrix}
+        $$
+        - 답
+            $$
+            \begin{bmatrix}
+            1&-1\\
+            -3&1\\
+            \end{bmatrix}
+            \begin{bmatrix}
+            x\\
+            y
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+            5\\
+            -3
+            \end{bmatrix}
+            $$
+
+      * 아래 연립 방정식을 행렬의 형태로 바꿔보세요.
+        $$
+        \bigg(
+        \begin{matrix}
+        x=y  \\
+        y=3+x
+        \end{matrix}
+        $$
+        - 답
+            $$
+            \begin{bmatrix}
+            1&-1\\
+            1&-1\\
+            \end{bmatrix}
+            \begin{bmatrix}
+            x\\
+            y
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+            0\\
+            -3
+            \end{bmatrix}
+            $$
+         ** 하나의 형태로만 답이 나오는 건 아닙니다. 예를 들어 위의 경우
+            $$
+            \begin{bmatrix}
+            1&-1\\
+            -1&1\\
+            \end{bmatrix}
+            \begin{bmatrix}
+            x\\
+            y
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+            0\\
+            3
+            \end{bmatrix}
+            $$
+            으로 표기될 수 있습니다. 하지만 형태가 다르더라도 정답은 동일하게 도출됩니다.
+         ** 그리고 위의 경우에는 해가 없습니다!! 왜 그럴까요?
+    - 행렬로 표현된 연립방정식은 여러 '규칙성'을 가진 알고리듬을 통해 그 해를 구할 수 있습니다.
+      * 행렬로 표현된 수식을 풀이하는 방법은 크게 2가지로 나뉠 수 있음.
+        + 직접해법 (direct method)
+          - [가우스 소거법 (Gauss elimination)](https://ko.wikipedia.org/wiki/가우스_소거법)
+          - [LU 분해법 (Low and Upper triangle decomposition)](https://ko.wikipedia.org/wiki/LU_분해)
+        + 반복해법 (iterative method)
+          - Jacobi method
+          - Gauss-Seidel method
+      * 가우스 소거법
+        + 기본 개념
+            1. 확장행렬(augmented matrix) 만들기
+            2. 두행 (가로줄)의 교환
+            3. 한 행에 0이 아닌 상수를 곱함 (scaling)
+            4. 한행에 다른 행의 배수를 더함 (row addition)
+            5. 2-4을 반복하며 삼각형 모양의 행렬을 만듦
+            6. 삼각형 행렬이 다 만들어지면 아래에서부터 거꾸로 대입 (back-substitution)
+        + 예를 들어 아래 행렬식을 푼다면
+            $$
+            \begin{bmatrix}
+            2& 3 & 1 \\
+            1& -1 & 1\\
+            3& 11 & 5
+            \end{bmatrix}
+            \begin{bmatrix}
+            x\\
+            y\\
+            z
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+            9\\
+            1\\
+            35
+            \end{bmatrix}
+            $$
+            1. 우선 좌변의 3x3행렬과 우변의 3x1'벡터'를 결합한 3x4확장 행렬을 만듭니다.
+            $$
+            \left[
+            \begin{array}{ccc|c}
+                        2& 3 & 1 & 9\\
+                        1& -1 & 1 & 1\\
+                        3& 11 & 5 & 35
+            \end{array}
+            \right]
+            \begin{array}{c}
+             \text{1st row}\\
+             \text{2nd row}\\
+             \text{3rd row}
+            \end{array}
+            $$
+            ```python
+            import numpy as np
+            A=np.zeros((3,4))
+            A[0,:]=2,3,1,9
+            A[1,:]=1,-1,1,1
+            A[2,:]=3,11,5,35
+            print(A)
+            ```
+            2. 행의 위치를 교환합니다.
+               - 0이 아닌 첫번째 열의 절대값이 높은 순서대로 아래에서부터 위로 채웁니다.
+
+               - 3번째 행(3rd row)의 1열이 가장 큰 수 3을 가지고 있습니다.
+                 그 다음 1번째 행 (1st row), 그리고 2번째 행(2nd row)입니다. 따라서,
+            $$
+            \left[
+            \begin{array}{ccc|c}
+                        1& -1 & 1 & 1\\
+                        2& 3 & 1 & 9\\
+                        3& 11 & 5 & 35
+            \end{array}
+            \right]
+            \begin{array}{c}
+             \text{2nd row}\\
+             \text{1st row}\\
+             \text{3rd row}
+            \end{array}
+            $$
+            ```python
+            import numpy as np
+            # initial empty A.
+            A=np.zeros((3,4))
+            # filling up the matrix.
+            A[0,:]=2,3,1,9
+            A[1,:]=1,-1,1,1
+            A[2,:]=3,11,5,35
+            print(A)
+
+            B=A.copy() ## copy to temporary matrix B.
+            A[::]=0.
+            A[2,:] = B[2,:] # 3rd row
+            A[1,:] = B[0,:] # 1st row
+            A[0,:] = B[1,:] # 2nd row
+            print(A)
+            ```
+            3. 전진 소거 (forward elimination)
+               * 첫번째 행의 첫번째 렬 값, 즉 ```A[0,0]```을 분모로 하는
+                 factor를 각 row마다 구합니다.
+                 따라서 factor는 첫번째 행을 제외하여
+                 ```python
+                 factor=np.zeros(2) # 2=3-1
+                 #m-1 with m being the row of augmented matrix A.
+                 #Therefore, m=A.shape[0]
+                 # factor = np.zeros(A.shape[0]-1)
+                 ```
+                 즉 두번째 row에 사용할 factor는 ```factor=A[1,0]/A[0,0]```
+                 새로운 두번째 row는 첫번째 row의
+                 ```python
+                 factor[0]=A[1,0]/A[0,0]
+                 factor[1]=A[2,0]/A[0,0]
+
+                 ## 다르게 적자면
+                 for irow in range(A.shape[0]-1):
+                    factor[irow]=A[irow+1,0]/A[0,0]
+                 ```
+
+
+
+
+
+
+
+
+
+
+# Week6 (연립 방정식 풀이)
+## 수업 06-1
   +
   $$x=g(x)$$
   형태 변환과 반복
@@ -382,9 +1139,12 @@
   + 간단한 함수로 실습
 ## 수업 06-2
 # Week7 (중간고사)
+- 중간고사 운영 지침
+    + 개인 노트북 지참하여 시험 (인터넷 연결 x)
+    + chatGPT등 사용하여 cheating시에 F
 ## 수업 07-1
 ## 수업 07-2
-# Week8 (연립방정식)
+# Week8 (principal space?)
 ## 수업 08-1
 ## 수업 08-2
 # Week9 (가우스 소거법)
