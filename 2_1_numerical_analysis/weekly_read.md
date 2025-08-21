@@ -1006,6 +1006,52 @@
             $$
             으로 표기될 수 있습니다. 하지만 형태가 다르더라도 정답은 동일하게 도출됩니다.
          ** 그리고 위의 경우에는 해가 없습니다!! 왜 그럴까요?
+    - 해가 없는 경우?
+        $$
+        \bigg(
+        \begin{matrix}
+        2x+y=5  \ \ \text{eq. (1)}\\
+        2x+y=-1   \ \ \text{eq. (2)}
+        \end{matrix}
+        $$
+        위 연립방정식을 만족하는 해는 없습니다. 왜 그럴까요?
+    - 행렬을 보고 해가 없는 경우를 '판별'할 수 있을까요?
+      판별(determination)하기 위해 우리는 '판별값' 혹은 '판별식'이라고 불리는 [determinant](https://ko.wikipedia.org/wiki/행렬식)를
+      구해서 알 수 있다.
+      * 예를 들어, 2x2행렬의 경우
+        $$
+        \begin{bmatrix}
+        a & b\\
+        c & d
+        \end{bmatrix}
+        $$
+        의 판별값을 아래와 같이 표기한다.
+        $$
+        \begin{vmatrix}
+        a & b\\
+        c & d
+        \end{vmatrix}
+        =ad-bc
+        $$
+
+      * 3x3행렬의 경우
+        $$
+        \begin{bmatrix}
+        a & b\\
+        c & d
+        \end{bmatrix}
+        $$
+        의 판별값을 아래와 같이 표기한다.
+        $$
+        \begin{vmatrix}
+        a & b & c \\
+        d&e&f\\
+        g&h&i
+        \end{vmatrix}
+        =aei+bfg+cdh-ceg-bdi-afh
+        $$
+
+
     - 행렬로 표현된 연립방정식은 여러 '규칙성'을 가진 알고리듬을 통해 그 해를 구할 수 있습니다.
       * 행렬로 표현된 수식을 풀이하는 방법은 크게 2가지로 나뉠 수 있음.
         + 직접해법 (direct method)
@@ -1021,7 +1067,8 @@
             3. 한 행에 0이 아닌 상수를 곱함 (scaling)
             4. 한행에 다른 행의 배수를 더함 (row addition)
             5. 2-4을 반복하며 삼각형 모양의 행렬을 만듦
-            6. 삼각형 행렬이 다 만들어지면 아래에서부터 거꾸로 대입 (back-substitution)
+            6. Diagnolization
+            7. 삼각형 행렬이 다 만들어지면 아래에서부터 거꾸로 대입 (back-substitution)
         + 예를 들어 아래 행렬식을 푼다면
             $$
             \begin{bmatrix}
@@ -1042,92 +1089,429 @@
             \end{bmatrix}
             $$
             1. 우선 좌변의 3x3행렬과 우변의 3x1'벡터'를 결합한 3x4확장 행렬을 만듭니다.
-            $$
-            \left[
-            \begin{array}{ccc|c}
-                        2& 3 & 1 & 9\\
-                        1& -1 & 1 & 1\\
-                        3& 11 & 5 & 35
-            \end{array}
-            \right]
-            \begin{array}{c}
-             \text{1st row}\\
-             \text{2nd row}\\
-             \text{3rd row}
-            \end{array}
-            $$
-            ```python
-            import numpy as np
-            A=np.zeros((3,4))
-            A[0,:]=2,3,1,9
-            A[1,:]=1,-1,1,1
-            A[2,:]=3,11,5,35
-            print(A)
-            ```
-            2. 행의 위치를 교환합니다.
-               - 0이 아닌 첫번째 열의 절대값이 높은 순서대로 아래에서부터 위로 채웁니다.
+                $$
+                \left[
+                \begin{array}{ccc|c}
+                  2& 3 & 1 & 9\\
+                  1& -1 & 1 & 1\\
+                  3& 11 & 5 & 35
+                \end{array}
+                \right]
+                \begin{array}{c}
+                  \text{1st row}\\
+                  \text{2nd row}\\
+                  \text{3rd row}
+                \end{array}
+                \begin{array}{c}
+                  \text{irow=0}\\
+                  \text{irow=1}\\
+                  \text{irow=2}
+                \end{array}
+                $$
+                그리고 이를 행렬 $$\boldsymbol A$$라 부릅시다. 따라서 아래와 같습니다.
+                $$
+                \begin{bmatrix}
+                A_{11} & A_{12} & A_{13} & A_{14} \\
+                A_{21} & A_{22} & A_{23} & A_{24} \\
+                A_{31} & A_{32} & A_{33} & A_{34} \\
+                \end{bmatrix}
+                =
+                \left[
+                \begin{array}{ccc|c}
+                  2& 3 & 1 & 9\\
+                  1& -1 & 1 & 1\\
+                  3& 11 & 5 & 35
+                \end{array}
+                \right]
+                $$
+                파이썬을 활용해 구현한다면 아래와 같습니다.
+                ```python
+                def show(A,fmt='%+7.2f'):
+                    """
+                    Function to more neatly print out the matrix.
+                    """
+                    print('--')
+                    for i, As in enumerate(A):
+                        cr=''
+                        for j, a in enumerate(As):
+                            cr=f'{cr} {fmt}'%a
+                        print(cr)
 
-               - 3번째 행(3rd row)의 1열이 가장 큰 수 3을 가지고 있습니다.
-                 그 다음 1번째 행 (1st row), 그리고 2번째 행(2nd row)입니다. 따라서,
-            $$
-            \left[
-            \begin{array}{ccc|c}
-                        1& -1 & 1 & 1\\
-                        2& 3 & 1 & 9\\
-                        3& 11 & 5 & 35
-            \end{array}
-            \right]
-            \begin{array}{c}
-             \text{2nd row}\\
-             \text{1st row}\\
-             \text{3rd row}
-            \end{array}
-            $$
-            ```python
-            import numpy as np
-            # initial empty A.
-            A=np.zeros((3,4))
-            # filling up the matrix.
-            A[0,:]=2,3,1,9
-            A[1,:]=1,-1,1,1
-            A[2,:]=3,11,5,35
-            print(A)
+                import numpy as np
+                A=np.zeros((3,4)) # 3 x 4 (three rows, four columns) (3행, 4열)
+                A[0,:]=2, 3, 1, 9 #irow=0
+                A[1,:]=1,-1, 1, 1 #irow=1
+                A[2,:]=3,11, 5,35 #irow=2
+                show(A) ## 말끔하게 행렬을 소수 2째자리 까지만 출력해서 봅시다.
+                ```
+                위에서 함수 ```show```는 행렬을 말끔하게 출력하기 위해서 간략히 작성해 봤습니다.
 
-            B=A.copy() ## copy to temporary matrix B.
-            A[::]=0.
-            A[2,:] = B[2,:] # 3rd row
-            A[1,:] = B[0,:] # 1st row
-            A[0,:] = B[1,:] # 2nd row
-            print(A)
-            ```
+            2. 행의 위치를 교환합니다 (optional입니다. 하지만 truncation 오차를 줄여줍니다).
+               - 첫번째 열(즉 ```A[:,0]```)의 절대값이 높은 순서대로 아래에서부터 위로 채웁니다.
+               - 1열 즉
+                $$
+                \begin{bmatrix}
+                \blue{2}&\blue{...}\\
+                \red{1}&\red{...}\\
+                \green{3}&\green{...}
+                \end{bmatrix}
+                $$
+                을 따라서, 3번째 행(3rd row)의 1열(1st col.) 값, 즉 $A_{13}$의
+                절대 값
+                $$|A_{13}|=\green{3}$$
+                이며 가장 큰 수입니다.
+                그 다음이 $|A_{11}|=\blue{2}, A_{12}=\red{1}$ 순서입니다.
+                $$
+                \left[
+                \begin{array}{ccc|c}
+                  \red{1}& \red{-1} & \red{1} & \red{1}\\
+                  \blue{2}& \blue{3} & \blue{1} & \blue{9}\\
+                  \green{3}& \green{11} & \green{5} & \green{35}
+                \end{array}
+                \right]
+                \begin{array}{c}
+                \text{2nd row}\rightarrow\text{3rd row}\\
+                \text{1st row}\rightarrow\text{2nd row}\\
+                \text{3rd row}\rightarrow\text{1st row}
+                \end{array}
+                $$
+                행렬 옆에 표기된 방법대로 row를 바꾸면
+                $$
+                \left[
+                \begin{array}{ccc|c}
+                  \green{3}& \green{11} & \green{5} & \green{35} \\
+                  \blue{2}& \blue{3} & \blue{1} & \blue{9}\\
+                  \red{1}& \red{-1} & \red{1} & \red{1}
+                \end{array}
+                \right]
+                $$
+                위 순서 까지를 Python 코드로 옮기면
+
+                ```python
+                #------------------------------------------------
+                import numpy as np
+                # initial empty A.
+                A=np.zeros((3,4))
+                # filling up the matrix.
+                A[0,:]=2, 3, 1, 9 #1st row, irow=0
+                A[1,:]=1,-1, 1, 1 #2nd row, irow=1
+                A[2,:]=3,11, 5,35 #3rd row, irow=2
+                show(A)
+
+                B=A.copy() ## copy to a temp matrix, and named it `B`
+                A[::]=0.   ## zeroed.
+                A[0,:] = B[2,:] # 3rd row [3,11,5,35] -> 1st row
+                A[1,:] = B[0,:] # 1st row [2, 3, 1,9] -> 2nd row
+                A[2,:] = B[1,:] # 2nd row [1,-1, 1,1] -> 3rd row
+                show(A)
+                ```
+
+                그런데, $$A$$ 행렬의 순서를 바꾸는 걸 Python에게 시키고 싶다면
+                [np.argsort](https://numpy.org/doc/stable/reference/generated/numpy.argsort.html)를 다음과 같이 활용할 수 있겠다.
+
+                ```python
+                print(A[:,0]) #1열 - 혹은 A[0:3,0]
+                # 위 결과는 [2,1,3] 순서가 된다. 그런데 우리는 절대 값의 순서가 필요.
+                # 따라서 np.abs 을 활용해 절대값을
+                print(np.abs(A[:,0]))
+                # 1열을 따라 낮은 값에서 순서대로 인덱스를 저장.
+                ind = np.argsort(np.abs(A[:,0]))
+                #
+                show(A[ind,:])       #낮은->높은 값 순서대로 바뀜.
+                show(A[ind[::-1],:]) #높은->낮은 값 순서대로... ind[::-1]
+                ```
+
             3. 전진 소거 (forward elimination)
-               * 첫번째 행의 첫번째 렬 값, 즉 ```A[0,0]```을 분모로 하는
-                 factor를 각 row마다 구합니다.
-                 따라서 factor는 첫번째 행을 제외하여
-                 ```python
-                 factor=np.zeros(2) # 2=3-1
-                 #m-1 with m being the row of augmented matrix A.
-                 #Therefore, m=A.shape[0]
-                 # factor = np.zeros(A.shape[0]-1)
-                 ```
-                 즉 두번째 row에 사용할 factor는 ```factor=A[1,0]/A[0,0]```
-                 새로운 두번째 row는 첫번째 row의
-                 ```python
-                 factor[0]=A[1,0]/A[0,0]
-                 factor[1]=A[2,0]/A[0,0]
+               * 앞서 재 정렬된 행렬은 아래와 같다.
+                $$
+                \boldsymbol A=
+                \left[
+                \begin{array}{ccc|c}
+                  \green{3}& \green{11} & \green{5} & \green{35} \\
+                  \blue{2}& \blue{3} & \blue{1} & \blue{9}\\
+                  \red{1}& \red{-1} & \red{1} & \red{1}
+                \end{array}
+                \right]
+                $$
+               * 첫번째 행의 첫번째 렬 값, ```A[0,0]```, 즉 $\green{3}$을 분자로
+                그리고 $\blue{\text{row2}}$, 첫번째 렬(col1) 값, 즉 $A_{21}$,
+                ```A[1,0]```$=\blue{2}$을 분모로 하는 factor
+                $\frac{\green{3}}{\blue{2}}$을 두번째 행, ```A[1,:]```에
+                곱해서 첫번째 행에서 뺀 후, 두번째 행을 대체합니다. Python으로 정리하면
+                아래와 같습니다.
+                ```python
+                # irow=1
+                A[1,:]=A[0,:]-(A[0,0]/A[1,0])*A[1,:]
+                ```
+               * 위 작업을 3번째 행에도 동일하게 수행하면
+                ```python
+                # irow=2
+                A[2,:]=A[0,:]-(A[0,0]/A[2,0])*A[2,:]
+                ```
+               * 그런데 이를 한번에 loop안에 적용할 수 있습니다. 즉:
+                ```python
+                #------------------------------------------------
+                import numpy as np
+                # initial empty A.
+                A=np.zeros((3,4))
+                # filling up the matrix.
+                A[0,:]=2, 3, 1, 9 #1st row, irow=0
+                A[1,:]=1,-1, 1, 1 #2nd row, irow=1
+                A[2,:]=3,11, 5,35 #3rd row, irow=2
+                show(A)
 
-                 ## 다르게 적자면
-                 for irow in range(A.shape[0]-1):
-                    factor[irow]=A[irow+1,0]/A[0,0]
-                 ```
+                B=A.copy() ## copy to a temp matrix, and named it `B`
+                A[::]=0.   ## zeroed.
+                A[0,:] = B[2,:] # 3rd row [3,11,5,35] -> 1st row
+                A[1,:] = B[0,:] # 1st row [2, 3, 1,9] -> 2nd row
+                A[2,:] = B[1,:] # 2nd row [1,-1, 1,1] -> 3rd row
+                show(A)
 
+                for irow in range(1,3):
+                  A[irow,:]=A[0,:]-(A[0,0]/A[irow,0])*A[irow,:]
+                show(A)
+                ```
+            4. 다시 행교환
+               * 이제 행렬은 아래와 같은 형태가 됩니다.
+                $$
+                \boldsymbol A=
+                \left[
+                \begin{array}{ccc|c}
+                  \green{3}& \green{11} & \green{5} & \green{35} \\
+                  \blue{0}& \blue{6.5} & \blue{3.5} & \blue{21.5}\\
+                  \red{0}& \red{14} & \red{2} & \red{32}
+                \end{array}
+                \right]
+                $$
+                이제 우리의 기준은 $$A_{22}$$ 즉 ```A[1,1]```입니다. 그런데
+                $$|\blue{6.5}|<|\red{14}|$$
+                이므로 행 교환이 필요합니다.
+                $$
+                \boldsymbol A=
+                \left[
+                \begin{array}{ccc|c}
+                  \green{3}& \green{11} & \green{5} & \green{35} \\
+                  \red{0}& \red{14} & \red{2} & \red{32}         \\
+                  \blue{0}& \blue{6.5} & \blue{3.5} & \blue{21.5}
+                \end{array}
+                \right]
+                $$
+                ```python
+                # swap
+                ind = np.argsort(np.abs(A[1:,1]))
+                A[1:,]=A[1:,][ind[::-1],:]
+                show(A)
+                ```
+            5. 다시 전진소거
+               * 전진 소거의 기준이, 앞서 살펴보았듯 $A_{22}$부터 입니다. 즉,
+                  $$
+                  \blue{A_{3,:}}\leftarrow\red{A_{2,:}}-A_{22}/A_{32}\times \blue{A_{3,:}}
+                  $$
 
+                  ```python
+                  icol=1 # A{:,2}
+                  irow=2 # A{3,:}
+                  A[irow,:]=A[icol,:]-(A[icol,icol]/A[irow,icol])*A[irow,:]
+                  show(A)
+                  ```
 
+                  즉 앞서 이어온 결과와 다 모아 행바꾸기, 전진 소거를 표현하자면 아래와 같다.
+                  ```python
+                  #------------------------------------------------
+                  import numpy as np
+                  # initial empty A.
+                  A=np.zeros((3,4))
+                  # filling up the matrix.
+                  A[0,:]=2, 3, 1, 9 #1st row, irow=0
+                  A[1,:]=1,-1, 1, 1 #2nd row, irow=1
+                  A[2,:]=3,11, 5,35 #3rd row, irow=2
+                  show(A)
 
+                  # swap
+                  icol=0
+                  ind = np.argsort(np.abs(A[icol:,icol]))
+                  A=A[ind[::-1],:]
+                  show(A)
+                  # forward
+                  for irow in range(icol+1,A.shape[0]):
+                      A[irow,:]=A[icol,:]-(A[icol,icol]/A[irow,icol])*A[irow,:]
+                  show(A)
 
+                  # swap
+                  icol=1
+                  ind = np.argsort(np.abs(A[icol:,icol]))
+                  A[icol:,]=A[icol:,][ind[::-1],:]
+                  show(A)
+                  # forward
+                  for irow in range(icol+1,A.shape[0]):
+                      A[irow,:]=A[icol,:]-(A[icol,icol]/A[irow,icol])*A[irow,:]
+                  show(A)
+                  ```
+                  여기서 icol=0,1로 바뀌며 동일한 코드가 반복되는 걸 알 수 있다.
 
+            6. Swap/Forward 축약 표기
+                  - 앞 단계의 결과를 행렬의 크기와 swap/forward의 대상 행과 열을 고려하여
+                  더욱 축약하자면 아래와 같이 표현된다.
+                  ```python
+                  A=np.zeros((3,4))
+                  # filling up the matrix.
+                  A[0,:]=2,3,1,9
+                  A[1,:]=1,-1,1,1
+                  A[2,:]=3,11,5,35
 
+                  for icol in range(0,A.shape[0]-1):
+                      ## swap
+                      a=np.abs(A[icol:,icol]) ## Based on [absolute values] of a portion of column
+                      ind=np.argsort(a)
+                      ind=ind[::-1] # reverse order
+                      A[icol:,:]=A[icol:,:][ind,:]
+                      show(A)
+                      ## forward
+                      for irow in range(icol+1,A.shape[0]):
+                          A[irow,:]=A[irow,:]-A[irow,icol]/A[icol,icol]*A[icol,:]
+                      show(A)
+                      print('****************')
+                  ```
+                  - 그 결과는 아래와 같다
+                  $$
+                  \left[
+                  \begin{array}{ccc|c}
+                    +3.00&  +11.00&   +5.00&  +35.00 \\
+                    +0.00&   -4.67&   -0.67&  -10.67 \\
+                    +0.00&   +0.00&   -1.71&   -4.43
+                  \end{array}
+                  \right]
+                  $$
+            7. Diagnalization
+                - 앞선 단계의 결과를 더욱 진행하여 대각선 값들을 제외하고 `0`을 만들 수 있다.
+                 아래 코드를 참고하자.
+                ```python
+                # now one could 'diagonalize'
+                for icol in range(A.shape[0]-1,0,-1):
+                    for irow in range(0,icol):
+                        f=A[irow,icol]/A[icol,icol]
+                        A[irow,:]=A[irow,:]-f*A[icol,:]
+                ```
+                그 결과는 아래와 같다.
+                $$
+                  \left[
+                  \begin{array}{ccc|c}
+                  +3.00&  -0.00&   +0.00&   +1.00 \\
+                  +0.00&  -4.67&   +0.00&   -8.94 \\
+                  +0.00&  +0.00&   -1.71&   -4.43
+                  \end{array}
+                  \right]
+                $$
+                정리하자면, 현재 연립 방정식은 아래와 같은 형태가 된 것이다.
+                $$
+                  \left[
+                  \begin{array}{c}
+                  +3.00x=+1.00 \\
+                  -4.67y=-8.94 \\
+                  -1.71z=-4.43
+                  \end{array}
+                  \right]
+                $$
+                각 식을 풀기 위해서는 행렬의 대각선 값들을 각 행에 각가 나눠주면 되겠다.
+                즉 아래와 같은 수행을 하고 나면
+                ```python
+                for icol in range(A.shape[0]):
+                    A[icol,:]=A[icol,:]/A[icol,icol]
+                ```
+                $$
+                  \left[
+                  \begin{array}{ccc|c}
+                  +1.00&  -0.00&   +0.00&  +0.33 \\
+                  -0.00&  +1.00&   -0.00&  +1.92 \\
+                  -0.00&  -0.00&   +1.00&  +2.58
+                  \end{array}
+                  \right]
+                $$
+                가 되어 $(x,y,z)=(0.33,1.92,2.58)$ 해를 찾게 되었다.
 
+            8. 전체 코드
+               - 1-7 단계에 이르는 전체 코드를 살펴보자.
+               - python code
+               ```python
+                def show(A,fmt='%+7.2f'):
+                    """
+                    Function to more neatly print out the matrix.
+                    """
+                    print('--')
+                    for i, As in enumerate(A):
+                        cr=''
+                        for j, a in enumerate(As):
+                            cr=f'{cr} {fmt}'%a
+                        print(cr)
+
+                import numpy as np
+                # initial empty A.
+                A=np.zeros((3,4))
+                # filling up the matrix.
+                A[0,:]=2,3,1,9
+                A[1,:]=1,-1,1,1
+                A[2,:]=3,11,5,35
+                #show(A)
+
+                # swap and forward
+                for icol in range(0,A.shape[0]-1):
+                    ## swap
+                    a=np.abs(A[icol:,icol])
+                    ind=np.argsort(a)
+                    ind=ind[::-1] # reverse order
+                    A[icol:,:]=A[icol:,:][ind,:]
+
+                    ## forward
+                    for irow in range(icol+1,A.shape[0]):
+                        A[irow,:]=A[irow,:]-A[irow,icol]/A[icol,icol]*A[icol,:]
+
+                show(A)
+
+                # now one could 'diagonalize'
+                for icol in range(A.shape[0]-1,0,-1):
+                    for irow in range(0,icol):
+                        f=A[irow,icol]/A[icol,icol]
+                        A[irow,:]=A[irow,:]-f*A[icol,:]
+                show(A)
+                for icol in range(A.shape[0]):
+                    A[icol,:]=A[icol,:]/A[icol,icol]
+                show(A)
+               ```
+        ** Resource
+          중간에 row의 순서를 바꾸는 과정이 없는 알고리듬으로 구현한 웹 프로그램을
+          [여기](https://onlinemschool.com/math/assistance/equation/gaus/)에서
+          찾을 수 있습니다.
+      * 가우스 예제.
+        + 위 코드를 활용해 아래를 풀어보자.
+                $$
+                  \left[
+                  \begin{array}{cccc|c}
+                   +2  & +3 & +1  & +9  & -1 \\
+                   -1  & -1 & -1 &  +1 & +10 \\
+                   +3  & +3 & -5  & +35 &  +0 \\
+                   +3  & +4 & +10 &  +3 &  -3
+                  \end{array}
+                  \right]
+                $$
+      * Numpy의 선형대수(Linear Algebra) 패키지 ([np.linalg](https://numpy.org/doc/2.2/reference/routines.linalg.html)) 활용
+        ```python
+        import numpy
+        A=np.zeros((3,4))
+        # filling up the matrix.
+        A[0,:]=2,3,1,9
+        A[1,:]=1,-1,1,1
+        A[2,:]=3,11,5,35
+        n=A.shape[0]
+
+        ## determinant 를 구한다.
+        print('det:',np.linalg.det(A[:,:n]))
+        # Inverse matrix 구한 다음 곱하기.
+        root=np.linalg.inv(A[:,:n])@A[:,n]
+        print(root)
+
+        # 혹은 solve를 활용해서
+        print(np.linalg.solve(A[:,:n], A[:,n]))
+        ```
 
 
 # Week6 (연립 방정식 풀이)
