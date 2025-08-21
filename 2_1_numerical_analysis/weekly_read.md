@@ -1057,9 +1057,11 @@
         + 직접해법 (direct method)
           - [가우스 소거법 (Gauss elimination)](https://ko.wikipedia.org/wiki/가우스_소거법)
           - [LU 분해법 (Low and Upper triangle decomposition)](https://ko.wikipedia.org/wiki/LU_분해)
+          - 수치 안정성이 높음
         + 반복해법 (iterative method)
           - Jacobi method
           - Gauss-Seidel method
+          - 반복해법은 발산하는 경우가 더러 있음. 항상 해를 찾을 수 있지 않음. 따라서 수치안정성이 낮음
       * 가우스 소거법
         + 기본 개념
             1. 확장행렬(augmented matrix) 만들기
@@ -1514,33 +1516,381 @@
         ```
 
 
-# Week6 (연립 방정식 풀이)
+# Week6
 ## 수업 06-1
-  +
-  $$x=g(x)$$
-  형태 변환과 반복
-  + 수렴 조건
-  + 간단한 함수로 실습
-## 수업 06-2
+  * LU decomposition
+    + Gauss 소거법과 더불어 설명되는 연립 방정식 풀이법
+    + 개념
+      $$
+      \boldsymbol A\cdot \boldsymbol x = \boldsymbol b
+      $$
+      를 만족시키는 벡터 $\boldsymbol x$의 $x_1,x_2,...,x_n$을 구하는 방법 중에
+      하나로써, 행렬 $\boldsymbol A$를 아래와 같이 나뉘어 활용한다.
+      $$
+      \boldsymbol A=\boldsymbol L \cdot \boldsymbol U
+      $$
+      $\boldsymbol L$:  **L**ower triangular matrix (대각선을 따라서 1)
+
+      $\boldsymbol U$:  **U**ower triangular matrix
+
+      4x4행렬을 예로 들자면
+      $$
+      \boldsymbol A
+      =
+      \begin{bmatrix}
+      A_{11} & A_{12} & A_{13} & A_{14}\\
+      A_{21} & A_{22} & A_{23} & A_{24}\\
+      A_{31} & A_{32} & A_{33} & A_{34} \\
+      A_{41} & A_{42} & A_{43} & A_{44}
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+      1 & 0 & 0 & 0\\
+      L_{21} & 1 & 0 &0 \\
+      L_{31} & L_{32} & 1 &0 \\
+      L_{41} & L_{42} & L_{43} &1 \\
+      \end{bmatrix}
+      \cdot
+      \begin{bmatrix}
+      U_{11} & U_{12} & U_{13} & U_{14}\\
+      0 & U_{22} & U_{23} & U_{24} \\
+      0 & 0 & U_{33} & U_{34} \\
+      0 & 0 & 0 & U_{44} \\
+      \end{bmatrix}
+      $$
+    + 예시
+      $$
+      \boldsymbol A
+      =
+      \begin{bmatrix}
+      2& 1& 0 & 3 \\
+      4& 4& 1& 7 \\
+      2 &-1& 2 &4 \\
+      6 & 7 & 5& 15
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+      1 & 0 & 0 & 0\\
+      L_{21} & 1 & 0&0 \\
+      L_{31} & L_{32} & 1 &0 \\
+      L_{41} & L_{42} & L_{43} & 1
+      \end{bmatrix}
+      \cdot
+      \begin{bmatrix}
+      U_{11} & U_{12} & U_{13} & U_{14}\\
+      0 & U_{22} & U_{23} & U_{24}\\
+      0 & 0 & U_{33} & U_{34} \\
+      0 & 0 & 0 & U_{44}
+      \end{bmatrix}
+      $$
+
+    <!-- + 유용한 점
+      * Swapping은 고려하지 않는 경우를 설명
+      - 열 1: icol=0, irow=icol+1:ncol
+      0 & 0 & U_{33} & U_{34} \\
+      $$
+      \boldsymbol A\cdot \boldsymbol x = \boldsymbol b
+      $$
+      을
+      $$
+      \rightarrow
+      \boldsymbol L \cdot (\boldsymbol U\cdot \boldsymbol x) = \boldsymbol b
+      $$
+      로 계산하면,
+      $$
+      \boldsymbol U\cdot \boldsymbol x = b
+      $$
+      는  -->
+
+  * Jacobi 법
+    + Newton-Raphson 처럼 반복하여 행렬 풀이
+    + 개념
+      $$
+      \boldsymbol A \cdot \boldsymbol x = \boldsymbol b
+      $$
+      $\boldsymbol A$가  $n\times n$행렬이라 하면, 각 행 $i$마다 아래 식이
+      $$
+      \sum_{j=1}^nA_{ij}x_j=b_i
+      $$
+      만족해야 함. 위 식을 바꿔 표현하여 각 행 $i$에 대해 아래와 같이 전개 가능함.
+      $$
+      A_{ii}x_i+\sum_{j\ne i}^nA_{ij}x_j=b_i
+      $$
+
+      만약 $A_{ii}\ne 0$이면, 고정되어 있는 한 행 $i$에 대한 위 식을 바꿔 $x_i$에 대해 표현하면
+      $$
+      x_i=\frac{1}{A_{ii}}\bigg(b_i-\sum_{j\ne i}^nA_{ij}x_j\bigg)
+      $$
+
+    + 반복 알고리듬
+      앞선 식에서 우변과 좌변의 $\boldsymbol x$벡터를 각각 직전$(k)$, 그리고 직후$(k+1)$ 값으로
+      표현하면
+      $$
+      x_i^{(k+1)}=\frac{1}{A_{ii}}\bigg(b_i-\sum_{j\ne i}^nA_{ij}x_j^{(k)}\bigg)
+      $$
+      로 표현되며, 위 반복문을 활용해 $\boldsymbol x$를 평가함.
+
+    + 예시: 2x2
+      $$
+      \bigg(
+      \begin{matrix}
+      4x_1+x_2=7  \ \ \text{eq. (1)}\\
+      x_1+3x_2=8   \ \ \text{eq. (2)}
+      \end{matrix}
+      $$
+      이라면 각 $i=1,2$ 마다 아래 두 식이 성립된다.
+      $$
+      x_1^{(k+1)}=\frac{1}{A_{11}}(b_1-\sum_{j\ne 1}A_{1j}x_j^{(k)})=\frac{1}{4}(7-\sum_{j\ne1}A_{1j}x_j^{(k)}) \ \ \ \ Eq. (1)
+      \newline
+      x_2^{(k+1)}=\frac{1}{A_{22}}(b_2-\sum_{j\ne 2}A_{2j}x_j^{(k)})=\frac{1}{3}(8-\sum_{j\ne2}A_{2j}x_{j}^{(k)}) \ \ \ \ Eq. (2)
+      $$
+
+      초기값 $\boldsymbol x^{(0)}=(0,0)$으로 시작해보자.
+      * Iteration 1
+        - 식1
+          $$
+          x_1^{(1)}=\frac{1}{4}(7-\sum_{j\ne 1}A_{1j}x_j^{(0)})=\frac{1}{4}\times 7=1.75
+          $$
+        - 식2
+          $$
+          x_2^{(k+1)}=\frac{1}{3}(8-\sum_{j\ne 2}A_{2j}x_j^{(k)})=\frac{1}{3}\times8\approx2.667
+          $$
+      * Iteration 2
+        - 식1
+          $$
+          x_1^{(2)}=\frac{1}{4}(7-\sum_{j\ne 1}A_{1j}x_j^{(1)})=\frac{1}{4}(7-2.667)=1.083
+          $$
+        - 식2
+          $$
+          x_2^{(2)}=\frac{1}{3}(8-\sum_{j\ne 2}A_{2j}x_j^{(2)})=\frac{1}{3}(8-1.75)=2.083
+          $$
+       * ... 반복
+    + 종료 조건: 오차의 수렴
+      * 오차 조건 1.
+        $$
+        |\boldsymbol{A}\cdot\boldsymbol{x}^{(k+1)}-\boldsymbol{b}|<Tol.
+        $$
+      * 오차 조건 2.
+        $$
+        |\boldsymbol{x}^{(k+1)}-\boldsymbol{x}^{(k)}| < Tol.
+        $$
+    + 예시: 3x3
+      ```python
+      import matplotlib.pyplot as plt
+      import numpy as np
+
+      A=np.zeros((3,3))
+      b=np.zeros(3)
+      # filling up the matrix.
+      A[0,:]=12,3,1
+      A[1,:]=9,-11,5
+      A[2,:]=1,-10,-20
+
+      b[:]=3,4,5
+
+      ndim=b.shape[0]
+      x=np.zeros(ndim)
+      tol=1e-4
+      err=tol*2
+      k=0
+      hist=[]
+      while err> tol and k<100: # max iter. set to 100
+          newx=np.zeros(ndim)
+          for icol in range(ndim):
+              summation=0.
+              for jrow in range(ndim):
+                  if icol==jrow:
+                      pass
+                  else:
+                      summation+=A[icol,jrow]*x[jrow]
+              newx[icol]=(b[icol]-summation)/A[icol,icol]
+              #x[icol]=1/A[icol,icol]*(b[icol]-)
+          err=np.sqrt(((newx-x)**2).sum())
+          Ea=np.sqrt(((A@newx-b)**2).sum())
+          x[::]=newx[::]
+          hist.append([err,Ea])
+          k+=1
+      hist=np.array(hist)
+
+      plt.plot(hist[:,0],'-x',label=r'$|\boldsymbol{A}\cdot\boldsymbol{x}^{(k+1)}-\boldsymbol{b}|$')
+      plt.plot(hist[:,1],'-o',label=r'$|\boldsymbol{x}^{(k+1)}-\boldsymbol{x}^{(k)}|$')
+      plt.legend()
+      ```
+
 # Week7 (중간고사)
 - 중간고사 운영 지침
     + 개인 노트북 지참하여 시험 (인터넷 연결 x)
     + chatGPT등 사용하여 cheating시에 F
 ## 수업 07-1
 ## 수업 07-2
-# Week8 (principal space?)
+# Week8 (multivariate Newton-Raphson method)
+ - 세상 모든 문제들이 선형적(linear)이다면 가우스 소거법을 활용해 풀이가 가능하니 참 좋겠지만, 그렇지 않다... 실은 대부분 흥미로운 일들은 비선형적이다.
+ - 예를 들어 다음 연립 방정식을 보자.
+   $$
+   x^2+y^2=7
+   \newline
+   e^x+y=8
+   $$
+   이 두 식을 만족하는 $(x,y)$좌표가 존재하는 것은 아래 Python 프로그램을 통해
+   쉽게 확인할 수 있다.
+   ```python
+   %matplotlib inline
+   import numpy as np
+   import matplotlib.pyplot as plt
+   ## 1st line
+   ths=np.linspace(-np.pi,np.pi)
+   r=np.sqrt(7)
+   x=np.cos(ths)*r
+   y=np.sin(ths)*r
+   plt.plot(x,y,label='Line1')
+   ## 2nd line
+   x=np.linspace(-3,3)
+   y=8-np.exp(x)
+   plt.plot(x,y,label='Line2')
+   plt.legend()
+   ```
+- 두선의 교점을 찾는 방법으로 multivariate Newton-Raphson method를 활용할 수 있다.
+  * Single variate Newton-Raphson method는 이미 다루었다.
+  * 아래 알고리듬을 따르면 되었다.
+    $$
+    x^{(n+1)}=x^{(n)}-\frac{f(x^{(n)})}{f^\prime(x^{(n)})}
+    $$
+  * Multivariate Newton-Raphson method의 알고리듬도 유사한 형태이다.
+    - 우선 앞서 다루었던 연립방정식을 아래와 같이 표현하자.
+      $$
+      f_1(x_1,x_2)=x_1^2+x_2^2-7
+      \newline
+      f_2(x_1,x_2)=e^{x_1}+x_2-8
+      $$
+      ```python
+      def func(x1,x2):
+        f=np.zeros(2) #
+        f[0]=x1**2+x2**2-7
+        f[1]=np.exp(x1)+x2-8
+        return f
+      ```
+    - 그런 다음 Jacobian matrix를 구하자. 이는 아래와 같이 정의된다.
+      $$
+      J_{ij}=\frac{\partial f_i}{\partial x_j}
+      $$
+      따라서,
+      $$
+      J_{11}=\frac{\partial f_1}{\partial x_1}=2x_1
+      \newline
+      J_{12}=\frac{\partial f_1}{\partial x_2}=2x_2
+      \newline
+      J_{21}=\frac{\partial f_2}{\partial x_1}=e^{x_1}
+      \newline
+      J_{22}=\frac{\partial f_2}{\partial x_2}=1
+      $$
+      ```python
+      def jacob(x1,x2):
+          j=np.zeros(2,2) # 2x2 jacob
+          j[0,0]=2*x1
+          j[0,1]=2*x2
+          j[1,0]=np.exp(x1)
+          j[1,1]=1
+          return j
+      ```
+    - 그런 다음 아래 알고리듬을 따르면 된다.
+      $$
+      x^{n+1}_1=x^{n}_1-J_{11}^{-1}f_1(x^n_1,x^n_2)-J_{12}^{-1}f_2(x^n_1,x^n_2)
+      \newline
+      x^{n+1}_2=x^{n}_2-J_{21}^{-1}f_1(x^n_1,x^n_2)-J_{22}^{-1}f_2(x^n_1,x^n_2)
+      $$
+      위 식을 행렬식을 활용해 표현하자면 아래와 같다.
+      $$
+      \begin{bmatrix}
+      x_1^{n+1}\\
+      x_2^{n+1}
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+      x_1^{n}\\
+      x_2^{n}
+      \end{bmatrix}
+      -
+      \begin{bmatrix}
+      J_{11}(x_1^n,x_2^n) & J_{12}(x_1^n,x_2^n) \\
+      J_{21}(x_1^n,x_2^n) & J_{22}(x_1^n,x_2^n) \\
+      \end{bmatrix}^{-1}
+      \cdot
+      \begin{bmatrix}
+      f_1(x_1^n,x_2^n)\\
+      f_2(x_1^n,x_2^n)
+      \end{bmatrix}
+      $$
+      아래와 같이 좀 더 간략히 아래와 같이 표기해보자.
+      $$
+      \begin{bmatrix}
+      \boldsymbol x^{n+1}
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+      \boldsymbol x^{n}
+      \end{bmatrix}
+      -
+      \begin{bmatrix}
+      \boldsymbol J
+      \end{bmatrix}^{-1}
+      \cdot
+      \begin{bmatrix}
+      \boldsymbol f
+      \end{bmatrix}
+      $$
+      행렬과 벡터를 재배치 해보면...
+      $$
+      \begin{bmatrix}
+      \boldsymbol J
+      \end{bmatrix}
+      \cdot
+      \begin{pmatrix}
+      \begin{bmatrix}
+      \boldsymbol x^{n+1}
+      \end{bmatrix}
+      -
+      \begin{bmatrix}
+      \boldsymbol x^{n}
+      \end{bmatrix}
+      \end{pmatrix}
+      =
+      \begin{bmatrix}
+      \boldsymbol f
+      \end{bmatrix}
+      $$
+      벡터의 변화량 $\Delta \boldsymbol x$를 활용하면
+
+      $$
+      \begin{bmatrix}
+      \boldsymbol J
+      \end{bmatrix}
+      \cdot
+      \begin{bmatrix}
+      \Delta \boldsymbol x
+      \end{bmatrix}
+      =
+      -\begin{bmatrix}
+      \boldsymbol f
+      \end{bmatrix}
+      $$
+      로 표현 가능하다. 따라서, 앞서 배운 Gauss 소거법 등을 통해, 역행렬을 계산하지 않고,
+      $[\Delta \boldsymbol x]$를 구할 수 있다.
+      ```python
+
+      ```
+
 ## 수업 08-1
 ## 수업 08-2
-# Week9 (가우스 소거법)
+# Week9
 ## 수업 09-1
 ## 수업 09-2
-# Week10 (가우스 조던법과 역행렬)
+# Week10
 ## 수업 10-1
 ## 수업 10-2
-# Week11 (보간법)
+# Week11
 ## 수업 11-1
 ## 수업 11-2
-# Week12 (수치적 분화 & 적분)
+# Week12
 ## 수업 12-1
 ## 수업 12-2
 # Week13
