@@ -12,6 +12,15 @@
     * 수업을 원활히 이해하기 위해서는 [**mse_data**](https://youngung.github.io/lecturenotes/data_mse/data_mse/) 강의를 선수강하길 강력 권함.
   + 준비물
     * 강의자료는 [여기](https://youngung.github.io/teaching)에서 찾을 수 있음
+    * 개인용 컴퓨터
+    * 노트
+    * 수업자료 출력물
+  + 평가
+    * 출석 (50%) - 출석이 매우 반드시 빠지지 않고 참석해 주세요.
+    * 태도 점수, 참여가 저조하거나, 뒷자리 앉아서 참석하지 않으면 F입니다 - 수치해석은 **전공필수** 입니다. F학점으로는 졸업이 불가능합니다.
+    * 반드시 스스로 실습해야합니다. 증명뿐만 아니라, 컴퓨터 코딩까지 다 해내야 합니다.
+
+
 ## 수업 01-2 (수치해석 전반 설명)
 # Week2
 ## 수업 02-1 (수와 오차 Error)
@@ -561,7 +570,7 @@
     이라면
   + 물음 초기값을 바꿔보고 그 영향을 살펴보자.
 
-# Week4 (Newton Raphson 2)
+# Week4 (Newton-Raphson 2)
 ## 수업 04-1 Taylor series와 Newton-Raphson 법
   + 개념
     - $f(x)=0$ 형태의 함수의 답을 구하고 싶을 때 사용할 수 있다.
@@ -1875,8 +1884,100 @@
       $$
       로 표현 가능하다. 따라서, 앞서 배운 Gauss 소거법 등을 통해, 역행렬을 계산하지 않고,
       $[\Delta \boldsymbol x]$를 구할 수 있다.
+      그렇게 하기 위해서 아래 정의된 ```guass```함수를 활용하자.
       ```python
+      def gauss(A):
+          """
+          Gauss elimination
 
+          Arguments
+          --------
+          A: augmented matrix in  [n,n+1] dimension
+
+          Returns
+          -------
+          Root in [n]-dimensional vector.
+          """
+          # swap and forward
+          for icol in range(0,A.shape[0]-1):
+              ## swap
+              a=np.abs(A[icol:,icol])
+              ind=np.argsort(a)
+              ind=ind[::-1] # reverse order
+              A[icol:,:]=A[icol:,:][ind,:]
+
+              ## forward
+              for irow in range(icol+1,A.shape[0]):
+                  A[irow,:]=A[irow,:]-A[irow,icol]/A[icol,icol]*A[icol,:]
+          # now one could 'diagonalize'
+          for icol in range(A.shape[0]-1,0,-1):
+              for irow in range(0,icol):
+                  f=A[irow,icol]/A[icol,icol]
+                  A[irow,:]=A[irow,:]-f*A[icol,:]
+          for icol in range(A.shape[0]):
+              A[icol,:]=A[icol,:]/A[icol,icol]
+          return A[:,-1]
+      ```
+      위 ```gauss```함수를 활용해 풀이한 예시이다.
+      ```python
+      ## Canvas
+
+      ## 1st line
+      ths=np.linspace(-np.pi,np.pi)
+      r=np.sqrt(7)
+      x=np.cos(ths)*r
+      y=np.sin(ths)*r
+
+      ## 2nd line
+      x=np.linspace(-3,3)
+      y=8-np.exp(x)
+
+      ## Function and Jacobian required for NR procedure
+      def func(x1,x2):
+          f=np.zeros(2) #
+          f[0]=x1**2+x2**2-7
+          f[1]=np.exp(x1)+x2-8
+          return f
+      def jacob(x1,x2):
+          j=np.zeros((2,2)) # 2x2 jacob
+          j[0,0]=2*x1
+          j[0,1]=2*x2
+          j[1,0]=np.exp(x1)
+          j[1,1]=1
+          return j
+
+      ## NEWTON-RAPHSON begins here.
+      # hist arrays for recording changes.
+      ## Initial guess
+      x=np.zeros(2) ## initial guess
+      x[::]=-1.0 ## initial guess
+
+      # Tolerance setting
+      tol=1e-9
+      err=tol*2
+      #
+      n=0
+      while err>tol and n<50:
+          # jacobian and functions
+          J=jacob(*x)
+          F=func(*x)
+
+          # Create augmented matrix A
+          A=np.zeros((J.shape[0],J.shape[0]+1))
+          A[:2,:2]=J[:,:]
+          A[:,-1]=-F[::]
+
+          # Obtain Delta x via guass elimination method
+          dx=gauss(A)
+
+          # Update x
+          x=x+dx
+          n+=1
+
+          # estimate the error
+          err=np.sqrt((F**2).sum())
+
+      print('solution:',x)
       ```
 
 ## 수업 08-1
