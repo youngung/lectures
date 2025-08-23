@@ -1,4 +1,4 @@
-**수치해석**
+# 수치해석
 국립창원대학교 재료금속공학과 [정영웅](mailto:yjeong@changwon.ac.kr)
 
 # 수업 목표
@@ -8,19 +8,27 @@
 ## 수업 01-1 (오리엔테이션)
   + 대상
     * 국립창원대학교 재료금속공학과 2학년 학생
-    * 전공 필수 교과로써 반드시 이수하여야만 졸업 가능
-    * 수업을 원활히 이해하기 위해서는 [**mse_data**](https://youngung.github.io/lecturenotes/data_mse/data_mse/) 강의를 선수강하길 강력 권함.
+    * 수치해석은 **전공필수** 교과로써 반드시 이수하여야만 졸업 가능
+    * 수업을 원활히 이해하기 위해서는 [**mse_data**](https://youngung.github.io/lecturenotes/data_mse/data_mse/) 강의를 선수강할 필요 있음
   + 준비물
     * 강의자료는 [여기](https://youngung.github.io/teaching)에서 찾을 수 있음
     * 개인용 컴퓨터
     * 노트
     * 수업자료 출력물
+    * Python, Jupyter notebook 등에 대한 기본적 이해와 활용 능력
+    * Numpy, Matplotlib 등 주요 Python library에 대한 이해와 활용 능력
+    * **pip** 활용해서 필요한 패키지를 제때 설치할 수 있어야 함.
   + 평가
-    * 출석 (50%) - 출석이 매우 반드시 빠지지 않고 참석해 주세요.
-    * 태도 점수, 참여가 저조하거나, 뒷자리 앉아서 참석하지 않으면 F입니다 - 수치해석은 **전공필수** 입니다. F학점으로는 졸업이 불가능합니다.
-    * 반드시 스스로 실습해야합니다. 증명뿐만 아니라, 컴퓨터 코딩까지 다 해내야 합니다.
-
-
+    * 출석 (50%) - 출석이 매우 중요 - 앞선 주차의 내용을 이해 못하면 중도 탈락하게 됨
+      반드시 빠지지 않고 참석해야 함
+    * 태도 점수, 참여가 저조하거나, 뒷자리 앉아서 수업에 참여하지 않으면 F
+    * 강의에 필요한 준비물이 갖춰져 있지 않으면 출석 인정 안됨
+    * 중간 / 기말 평가
+       + 강의 내용에 대한 이론 평가
+       - 강의 내용을 스스로 프로그램/디버깅 하여 만들 수 있어야 함.
+  + 강의
+    * 수치해석은 **전공필수** 입니다. F학점으로는 졸업이 불가능합니다.
+    * 반드시 스스로 실습해야함. 증명뿐만 아니라, 컴퓨터 코딩까지 **스스로**해야 함.
 ## 수업 01-2 (수치해석 전반 설명)
 # Week2
 ## 수업 02-1 (수와 오차 Error)
@@ -109,7 +117,39 @@
         plt.xlim(-4,4)
         plt.ylim(-2,2)
         ```
-      - 예제: MacLaurin series expansion for chemical potential
+
+      - 에제: $y=e^x$
+        이 함수의 테일러 시리즈는 다음과 같다.
+        $$
+        e^x=\sum_{n=0}^{\infty}\frac{1}{n!}x^n
+        $$
+        * $n=4$까지 전개 하면
+          $$
+          e^x=1+x+1/2x^2+1/6x^3+1/24x^4 ...
+          $$
+        *  이 둘을 직접 그려보고 얼마나 유사한지 살펴보자
+          ```python
+          def taylor_ex(x,n):
+              s=0.
+              for i in range(0,n+1):
+                  s=s+1./factorial(i)*(x**i)
+              return s
+
+          xs=np.linspace(0,3)
+          plt.plot(xs,np.exp(xs),'k-',label=r'$y=e^x$',lw=3,alpha=0.3)
+          for n in range(1,6):
+              plt.plot(xs,taylor_ex(xs,n),'--',label=rf'Taylor series up to $n=${n}')
+
+          plt.ylim(0,20)
+          plt.legend()
+          ```
+      - 에제: $y=cos(x)$의 테일러 급수를 사용해서 $n=1,4,7,10$까지 경우를 나타내고
+        실제 y=cos(x)함수와의 차이를 비교해보자.
+
+      - 예제: $y=\ln(1+x) $ 여기서 $x$의 범위는 $x\in(-1,1]$
+
+      - 예제: Maclaurin series expansion for chemical potential (?)
+
   + 오차 측정 방법
     * (1) 절대 오차 (absolute error)
       $$
@@ -257,12 +297,12 @@
         $$
         1.\text{XXXX..} \times 2^n
         $$
-        형태로 바꿔서 저장함.
+        형태로 바꿔서 저장함. 따라서 이진수 ```101.11```을 아래와 같이 변환:
         $$
-        101.11=1.\green{0111}\times 2^{\red{2}}
+        101.11\rightarrow1.\green{0111}\times 2^{\red{2}}
         $$
         위와 같이 저장하면 두 부분의 수가 저장되어야 함.
-        + 가수(mantissa) = $\green{0111}0000$ (정해진 칸내에서 유효숫자 뒤는 0으로 채운다.)
+        + 가수(mantissa) = $\green{0111}0000...$ (정해진 칸내에서 유효숫자 뒤는 0으로 채운다.)
         + 지수(exponent) = $\red{2}$
         + base가 ```2```인 이유는 이진법을 활용하기 때문에...
       * 부호
@@ -278,17 +318,19 @@
         - 저장되는 지수는 $\red{2}+\blue{1023}$=1025
         - 따라서 바이어스 처리된 1025를 아래와 같이 2진수로 표현하면?
         ```text
-        1025 ÷ 2 = 512 … 1
-        512 ÷ 2  = 256 … 0
-        256 ÷ 2  = 128 … 0
-        128 ÷ 2  = 64  … 0
-        64 ÷ 2   = 32  … 0
-        32 ÷ 2   = 16  … 0
-        16 ÷ 2   = 8   … 0
-        8 ÷ 2    = 4   … 0
-        4 ÷ 2    = 2   … 0
-        2 ÷ 2    = 1   … 0
-        1 ÷ 2    = 0   … 1
+                   몫    나머지
+        ---------------------
+        1025 / 2 = 512 ... 1
+        512 / 2  = 256 ... 0
+        256 / 2  = 128 ... 0
+        128 / 2  = 64  ... 0
+        64 / 2   = 32  ... 0
+        32 / 2   = 16  ... 0
+        16 / 2   = 8   ... 0
+        8 / 2    = 4   ... 0
+        4 / 2    = 2   ... 0
+        2 / 2    = 1   ... 0
+        1 / 2    = 0   ... 1
         ```
         ```10000000001```가 된다 (11비트, 즉 2진법으로 11자리)
       * 가수 (Mantissa, fraction)
@@ -301,7 +343,57 @@
       방식으로 저장한다면..
         - 부호 = ```0``` (1비트, 즉 0(+) 또는 1(-))
         - 지수 = ```10000000000``` (11비트)
-        - 가수 = ```0111000000000000000000000000000000000000000000000000``` (54비트)
+        - 가수 = ```0111000000000000000000000000000000000000000000000000``` (52비트)
+        - 따라서 전체는
+        ```0``` ```10000000000``` ```0111000000000000000000000000000000000000000000000000```
+
+    - 예, 10진수 1.5를 저장하기.
+      * 1=```1```
+      * 0.5 = ?
+        $$
+        0.5 \times 2 = 1.0
+        $$
+        실수 ```1```이 나온다. 따라서
+        0.5=```1.1```이 된다.
+      * 정규화는?
+        $$
+        1.\text{XXXX...} \times 2^n
+        $$
+        으로 해야하므로,
+        $$
+        1.1\rightarrow1.1 \times 2^0
+        $$
+        가수/지수를 구하면
+        + 가수 = $10000...$
+        + 지수 = 0
+      * 부호 =0
+      * 지수는 바이어스로 저장한다 (1023). 따라서
+        - $$0+1023=1023$$
+        - 바이어스 처리된 1023을 이진수로 표현하면?
+        ```text
+        1023/2=511 ... 1
+        511 /2=255 ... 1
+        255 /2=127 ... 1
+        127 /2=63  ... 1
+        63  /2=31  ... 1
+        31  /2=15  ... 1
+        15  /2=7   ... 1
+        7   /2=3  ... 1
+        3   /2=1  ... 1
+        1.  /2=0. ... 1
+        ```
+        따라서 ```1111111111```가 된다.
+      * 가수
+        정규화된 수 $$1.1\times 2^0$$에서 앞자리 1은 숨기고, 나머지
+        ```1```뒤에 0을 채운 52비트.
+      * 총정리하자면
+        - 부호=```0``` (1비트)
+        - 지수=```01111111111``` (11비트)
+        - 가수=```1000000000000000000000000000000000000000000000000000``` (52비트)
+        ```0``` ```01111111111``` ```1000000000000000000000000000000000000000000000000000```
+      * 만약 32비트를 사용하면 0.5가 어떻게 저장될까?
+        - 32비트 컴퓨터의 바이어스는 127이고, 부호는 1비트, 지수는 8비트, 맨티사는 23비트를 사용한다.
+
   + 유한 정밀도 (finite precision)의 한계
     * 가수부가 52비트로 제한되어 있음. 약 15~16자리 10진수까지만 정확히 표현 가능
     * 그 이후 자리수는 '잘림'(truncation)
@@ -1733,6 +1825,7 @@
 ## 수업 07-1
 ## 수업 07-2
 # Week8 (multivariate Newton-Raphson method)
+## 수업 08-1 (Build your own multivariate NR function 1)
  - 세상 모든 문제들이 선형적(linear)이다면 가우스 소거법을 활용해 풀이가 가능하니 참 좋겠지만, 그렇지 않다... 실은 대부분 흥미로운 일들은 비선형적이다.
  - 예를 들어 다음 연립 방정식을 보자.
    $$
@@ -1979,11 +2072,166 @@
 
       print('solution:',x)
       ```
+- Multivariate NR method를 함수화시키자.
+  ```python
+  def mvNR(func,func_jac,xinit):
+      """
+      Arguments
+      ---------
+      func: objective function
+      func_jac: jacobian
+      xinit: initial guess on x vectors.
 
-## 수업 08-1
-## 수업 08-2
-# Week9
-## 수업 09-1
+      Returns
+      -------
+      x     : solution vector
+      hist  : trajectory of x vector
+      fhist : trajectory of f vector
+      """
+      x=xinit[::]
+      # hist arrays for recording changes.
+      hist=[]
+      fhist=[]
+      # Tolerance setting
+      tol=1e-9
+      err=tol*2
+      n=0
+      maxiter=50
+      while err>tol and n<maxiter:
+          # jacobian and functions
+          J=jacob(*x)
+          F=func(*x)
+
+          # history
+          hist.append(x)
+          fhist.append(F)
+
+          # Create augmented matrix A
+          A=np.zeros((J.shape[0],J.shape[0]+1))
+          A[:2,:2]=J[:,:]
+          A[:,-1]=-F[::]
+
+          # Obtain Delta x via guass elimination method
+          dx=gauss(A)
+
+          # updates x, count (n), and error
+          x=x+dx
+          n+=1
+          err=np.sqrt((F**2).sum())
+
+      hist=np.array(hist)
+      fhist=np.array(fhist)
+      return x,hist,fhist
+  ```
+
+- ```mvNR```함수를 앞선 ```guass```함수와 함께 사용한다면 아래와 같이 매우 짧은 몇 줄의
+  코드로 앞선 예제를 작성할 수 있다. 따라서 한번 작성해 놓은 함수를 다시 사용할 수 있게 되었다.
+  학생들이 이 경험을 통해 모듈화의 이점을 몸소 체험해 보길 바란다.
+  ```python
+  def f1(x,y):  return x*y-10
+  def f2(x,y):  return x**2-y-3
+  def func(x,y): return np.array([f1(x,y),f2(x,y)])
+  def jacob(x,y):
+      j=np.zeros((2,2))
+      j[0,0]=y
+      j[0,1]=x
+      j[1,0]=2*x
+      j[1,1]=-1
+      return j
+
+  ## NEWTON-RAPHSON begins here.
+  ## Initial guess
+  x=np.zeros(2) ## initial guess
+  x[::]=4.0 ## initial guess
+  x,hist,fhist=mvNR(func,jacob,xinit=np.ones(2))
+  ```
+
+## 수업 08-2 (Geomtric interpretation of multivariate NR)
+ - 앞선 예제를 기하학적으로 해석하자.
+ - 우선 정형화된 아래 2D 그래프 생선 함수를 사용하자.
+    ```python
+    def init_fig(f1,f2):
+        fig=plt.figure(figsize=(8,8))
+        ax1=fig.add_subplot(221)#,projection='3d')
+        ax2=fig.add_subplot(222,projection='3d')
+        ax3=fig.add_subplot(223)#,projection='3d')
+        ax4=fig.add_subplot(224,projection='3d')
+
+        # Grid
+        x=np.linspace(-10,10,100)
+        y=np.linspace(-10,10,100)
+        X,Y=np.meshgrid(x,y)
+
+        ## 2D contour plot
+        mappable=ax1.contourf(X,Y,f1(X,Y),cmap='jet')
+        plt.colorbar(mappable,ax=ax1,label=r'$f_1$')
+        ax1.set_title(r'$f_1(x_1,x_2)$')
+        ax1.set_xlabel(r'$x_1$')
+        ax1.set_ylabel(r'$x_2$')
+        ## 3D plane
+        ax2.plot_surface(X,Y,f1(X,Y),cmap='jet')
+        ax2.set_zlabel(r'$f_1$')
+        ax2.set_xlabel(r'$x_1$')
+        ax2.set_ylabel(r'$x_2$')
+
+        ## 2D contour plot
+        mappable=ax3.contourf(X,Y,f2(X,Y),cmap='jet')
+        plt.colorbar(mappable,ax=ax3,label=r'$f_2$')
+        ax3.set_title(r'$f_2(x_1,x_2)$')
+        ax3.set_xlabel(r'$x_1$')
+        ax3.set_ylabel(r'$x_2$')
+        ## 3D plane
+        ax4.plot_surface(X,Y,f2(X,Y),cmap='jet')
+        ax4.set_zlabel(r'$f_2$')
+        ax4.set_xlabel(r'$x_1$')
+        ax4.set_ylabel(r'$x_2$')
+        return fig,ax1,ax2,ax3,ax4
+    ```
+ -  아래 예제를 활용해보자
+    ```python
+    def f1(x,y):  return x*y-10
+    def f2(x,y):  return x**2-y-3
+    def func(x,y): return np.array([f1(x,y),f2(x,y)])
+    def jacob(x,y):
+        j=np.zeros((2,2))
+        j[0,0]=y
+        j[0,1]=x
+        j[1,0]=2*x
+        j[1,1]=-1
+        return j
+
+    ## NEWTON-RAPHSON begins here.
+    ## Initial guess
+    x=np.zeros(2) ## initial guess
+    x[::]=4.0 ## initial guess
+    x,hist,fhist,jhist,niters=mvNR(func,jacob,xinit=np.ones(2))
+    print(f'niters: {niters}')
+
+    ## Below is to create figures
+    %matplotlib widget
+    #%matplotlib inline
+
+    fig,ax1,ax2,ax3,ax4=init_fig(f1,f2)
+
+    kws=dict(mfc='None',zorder=100,ls='None')
+    for n,x in enumerate(hist):
+        f1,f2=fhist[n]
+        x1,x2=x
+
+        kws.update(label=r'$n$=%i'%n)
+        ax1.plot(x1,x2,**kws)
+        ax2.plot(x1,x2,f1,**kws)
+        ax3.plot(x1,x2,**kws)
+        ax4.plot(x1,x2,f2,**kws)
+
+    ax1.legend(loc='upper left')
+    ```
+
+- 아래 그림을 보고 어떠한 일이 일어나고 있는지 이해해보자.
+   ![imag](data/mvNR.gif)
+
+# Week9, (NR method in case you don't know the derivative).
+## 수업 09-1 (1D NR without knowing the derivative)
 ## 수업 09-2
 # Week10
 ## 수업 10-1
@@ -1994,10 +2242,10 @@
 # Week12
 ## 수업 12-1
 ## 수업 12-2
-# Week13
+# Week13 (포탄의 trajectory?)
 ## 수업 13-1
 ## 수업 13-2
-# Week14
+# Week14 (Diffusion?)
 ## 수업 14-1
 ## 수업 14-2
 # Week15

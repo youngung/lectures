@@ -439,6 +439,10 @@
         print('total number of electrons:',no_electrons)
         ```
 
+      * 예시, 10진법 수를 이진법으로 바꾸기.
+
+
+
 # Week3 (함수, class, module, **import** )
  - 목표
   + 함수와 클래스, 그리고 모듈의 이해
@@ -826,7 +830,7 @@
       # os.listdir(os.getcwd())
       # `str`의 split을 찾거나, 혹은 index를 활용해 바꿀 수도 있겠다.
       ```
-## 수업 04-2
+## 수업 04-2 (Numpy 기초)
   - 개념
     + [Numpy](www.numpy.org)는 고성능 수치 계산을 위한 library
   - 설치 (인터넷 연결 필요)
@@ -944,6 +948,7 @@
     + Determination, Eigen value 등을 계산할 수 있다.
 ## 수업 05-1
   - 벡터의 크기
+
     벡터
     $$
     \boldsymbol a
